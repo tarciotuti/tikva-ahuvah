@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
   Platform,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -16,6 +17,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { exportBackup, restoreBackup } from '../../services/backup';
 import { getMemories, getCapsules, getNotes } from '../../services/database';
+import {
+  getSecurityConfig,
+  saveSecurityConfig,
+  checkBiometricsSupportAsync,
+  SecurityConfig,
+} from '../../services/security';
 
 export default function SettingsScreen() {
   const [stats, setStats] = useState({
@@ -30,7 +37,17 @@ export default function SettingsScreen() {
   const [backupJsonInput, setBackupJsonInput] = useState('');
   const [isExporting, setIsExporting] = useState(false);
 
-  const loadStats = useCallback(() => {
+  // Segurança (PIN e Biometria)
+  const [securityConfig, setSecurityConfig] = useState<SecurityConfig>({
+    isLockEnabled: false,
+    pin: '',
+    useBiometrics: true,
+  });
+  const [hasBiometrics, setHasBiometrics] = useState(false);
+  const [pinModalVisible, setPinModalVisible] = useState(false);
+  const [newPinInput, setNewPinInput] = useState('');
+
+  const loadData = useCallback(() => {
     try {
       const memories = getMemories('Todas');
       const capsules = getCapsules();
@@ -42,6 +59,9 @@ export default function SettingsScreen() {
         openedCapsules: capsules.filter((c) => c.isOpened).length,
         totalCapsules: capsules.length,
       });
+
+      const config = getSecurityConfig();
+      setSecurityConfig(config);
     } catch (e) {
       console.error(e);
     }
@@ -49,9 +69,44 @@ export default function SettingsScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadStats();
-    }, [loadStats])
+      loadData();
+    }, [loadData])
   );
+
+  useEffect(() => {
+    checkBiometricsSupportAsync().then((res) => {
+      setHasBiometrics(res.hasHardware && res.isEnrolled);
+    });
+  }, []);
+
+  const handleToggleLock = (value: boolean) => {
+    if (value && !securityConfig.pin) {
+      // Se ainda não tem PIN cadastrado, pede para cadastrar primeiro
+      setNewPinInput('');
+      setPinModalVisible(true);
+    } else {
+      saveSecurityConfig({ isLockEnabled: value });
+      setSecurityConfig((prev) => ({ ...prev, isLockEnabled: value }));
+    }
+  };
+
+  const handleSavePin = () => {
+    if (newPinInput.length !== 4) {
+      Alert.alert('PIN inválido', 'O PIN deve conter exatamente 4 dígitos numéricos.');
+      return;
+    }
+
+    saveSecurityConfig({ pin: newPinInput, isLockEnabled: true });
+    setSecurityConfig((prev) => ({ ...prev, pin: newPinInput, isLockEnabled: true }));
+    setPinModalVisible(false);
+    setNewPinInput('');
+    Alert.alert('PIN Ativado! 🔒', 'Seu diário agora está protegido com segurança.');
+  };
+
+  const handleToggleBiometrics = (value: boolean) => {
+    saveSecurityConfig({ useBiometrics: value });
+    setSecurityConfig((prev) => ({ ...prev, useBiometrics: value }));
+  };
 
   const handleExportBackup = async () => {
     setIsExporting(true);
@@ -82,7 +137,7 @@ export default function SettingsScreen() {
             if (res.success) {
               setRestoreModalVisible(false);
               setBackupJsonInput('');
-              loadStats();
+              loadData();
               Alert.alert('Sucesso!', res.message);
             } else {
               Alert.alert('Erro', res.message);
@@ -104,7 +159,7 @@ export default function SettingsScreen() {
           <View style={styles.dedicationIconCircle}>
             <Ionicons name="sparkles" size={20} color={COLORS.gold} />
           </View>
-          <Text style={styles.dedicationTitle}>Um Presente para Você</Text>
+          <Text style={styles.dedicationTitle}>Tikva Ahuvah</Text>
           <Text style={styles.dedicationText}>
             {'Este diário foi pensado para ser o seu porto seguro de boas lembranças e crescimento espiritual. Que você nunca se esqueça da pessoa preciosa que é, da sua força e do propósito lindo que Deus tem para a sua vida.'}
           </Text>
@@ -138,17 +193,79 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Seção de Backup */}
+        {/* Seção de Segurança & Privacidade (PIN / Digital) */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="shield-checkmark" size={22} color={COLORS.primary} />
-            <Text style={styles.sectionTitle}>Backup à Prova de 10 Anos</Text>
+            <Ionicons name="lock-closed" size={22} color={COLORS.primary} />
+            <Text style={styles.sectionTitle}>Privacidade & Bloqueio</Text>
           </View>
 
           <Text style={styles.sectionDescription}>
-            Suas memórias, fotos e anotações moram no seu celular e não dependem de servidores externos. 
-            Você pode salvar uma cópia de segurança direto no seu <Text style={{ fontWeight: '700' }}>Google Drive</Text> para 
-            nunca perder nada ao longo dos anos.
+            Proteja suas orações, anotações e memórias com senha de 4 dígitos ou impressão digital ao abrir o app.
+          </Text>
+
+          {/* Toggle Principal de Bloqueio */}
+          <View style={styles.settingRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingLabel}>Ativar Proteção no App</Text>
+              <Text style={styles.settingSub}>
+                {securityConfig.isLockEnabled ? 'Bloqueio ativo com segurança' : 'Desativado (abre direto)'}
+              </Text>
+            </View>
+            <Switch
+              value={securityConfig.isLockEnabled}
+              onValueChange={handleToggleLock}
+              trackColor={{ false: COLORS.border, true: COLORS.primaryTint }}
+              thumbColor={securityConfig.isLockEnabled ? COLORS.primary : '#f4f3f4'}
+            />
+          </View>
+
+          {/* Opções quando a proteção está ativa */}
+          {securityConfig.isLockEnabled && (
+            <View style={styles.subSettingsContainer}>
+              {hasBiometrics && (
+                <View style={styles.settingRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.settingLabel}>Usar Impressão Digital</Text>
+                    <Text style={styles.settingSub}>Desbloqueio biométrico rápido</Text>
+                  </View>
+                  <Switch
+                    value={securityConfig.useBiometrics}
+                    onValueChange={handleToggleBiometrics}
+                    trackColor={{ false: COLORS.border, true: COLORS.primaryTint }}
+                    thumbColor={securityConfig.useBiometrics ? COLORS.primary : '#f4f3f4'}
+                  />
+                </View>
+              )}
+
+              <TouchableOpacity
+                style={styles.changePinBtn}
+                activeOpacity={0.7}
+                onPress={() => {
+                  setNewPinInput('');
+                  setPinModalVisible(true);
+                }}
+              >
+                <Ionicons name="key-outline" size={16} color={COLORS.primary} />
+                <Text style={styles.changePinText}>
+                  {securityConfig.pin ? 'Alterar PIN de 4 Dígitos' : 'Cadastrar PIN'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        {/* Seção de Backup no Google Drive */}
+        <View style={styles.sectionCard}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="cloud-upload" size={22} color={COLORS.primary} />
+            <Text style={styles.sectionTitle}>Backup no Google Drive</Text>
+          </View>
+
+          <Text style={styles.sectionDescription}>
+            Seus dados ficam 100% no seu celular e nunca saem dele sem sua permissão.
+            Toque abaixo para salvar uma cópia no seu <Text style={{ fontWeight: '700' }}>Google Drive</Text> ou
+            restaurar um backup anterior.
           </Text>
 
           <TouchableOpacity
@@ -157,7 +274,7 @@ export default function SettingsScreen() {
             onPress={handleExportBackup}
             disabled={isExporting}
           >
-            <Ionicons name="cloud-upload" size={20} color={COLORS.white} />
+            <Ionicons name="logo-google" size={18} color={COLORS.white} />
             <Text style={styles.primaryActionBtnText}>
               {isExporting ? 'Preparando Arquivo...' : 'Fazer Backup no Google Drive'}
             </Text>
@@ -175,12 +292,63 @@ export default function SettingsScreen() {
 
         {/* Informações sobre Privacidade */}
         <View style={styles.infoBox}>
-          <Ionicons name="lock-closed-outline" size={18} color={COLORS.textMuted} />
+          <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.textMuted} />
           <Text style={styles.infoText}>
             100% offline, seguro e privado. Somente você tem acesso aos seus textos, orações e registros.
           </Text>
         </View>
       </ScrollView>
+
+      {/* Modal para Cadastrar/Alterar PIN */}
+      <Modal
+        visible={pinModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setPinModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Cadastrar PIN de 4 Dígitos</Text>
+              <TouchableOpacity onPress={() => setPinModalVisible(false)}>
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalDesc}>
+              Escolha uma senha numérica de 4 dígitos fácil de lembrar para proteger o seu diário:
+            </Text>
+
+            <TextInput
+              style={styles.pinInput}
+              placeholder="Ex: 1234"
+              placeholderTextColor={COLORS.textMuted}
+              value={newPinInput}
+              onChangeText={(text) => setNewPinInput(text.replace(/[^0-9]/g, '').slice(0, 4))}
+              keyboardType="number-pad"
+              maxLength={4}
+              secureTextEntry
+              textAlign="center"
+            />
+
+            <View style={styles.modalButtonsRow}>
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
+                onPress={() => setPinModalVisible(false)}
+              >
+                <Text style={styles.modalCancelText}>Cancelar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalConfirmBtn}
+                onPress={handleSavePin}
+              >
+                <Text style={styles.modalConfirmText}>Salvar PIN</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Modal de Restauração */}
       <Modal
@@ -342,7 +510,40 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textSecondary,
     lineHeight: 20,
-    marginBottom: 18,
+    marginBottom: 16,
+  },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  settingLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: COLORS.text,
+  },
+  settingSub: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  subSettingsContainer: {
+    borderTopWidth: 1,
+    borderTopColor: COLORS.borderLight,
+    marginTop: 10,
+    paddingTop: 10,
+  },
+  changePinBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 10,
+  },
+  changePinText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
   primaryActionBtn: {
     flexDirection: 'row',
@@ -413,6 +614,18 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     lineHeight: 18,
     marginBottom: 14,
+  },
+  pinInput: {
+    borderWidth: 1.5,
+    borderColor: COLORS.primary,
+    borderRadius: 14,
+    padding: 16,
+    fontSize: 28,
+    fontWeight: '800',
+    letterSpacing: 16,
+    color: COLORS.primaryDark,
+    backgroundColor: COLORS.primaryLight,
+    marginBottom: 20,
   },
   modalInput: {
     height: 140,

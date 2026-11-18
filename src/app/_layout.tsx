@@ -1,22 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { initDatabase } from '../services/database';
-import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, View, StyleSheet, AppState, AppStateStatus } from 'react-native';
 import { COLORS } from '../constants/theme';
+import { getSecurityConfig, SecurityConfig } from '../services/security';
+import { SecurityLockScreen } from '../components/SecurityLockScreen';
 
 export default function RootLayout() {
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
+  const [isReady] = useState(() => {
     try {
       initDatabase();
-    } catch (error) {
-      console.error('Erro ao inicializar banco de dados SQLite:', error);
-    } finally {
-      setIsReady(true);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
     }
+  });
+
+  const [securityConfig, setSecurityConfig] = useState<SecurityConfig>(() => {
+    try {
+      initDatabase();
+      return getSecurityConfig();
+    } catch {
+      return { isLockEnabled: false, pin: '', useBiometrics: true };
+    }
+  });
+
+  const [isLocked, setIsLocked] = useState(() => securityConfig.isLockEnabled);
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      if (
+        (appState.current || '').match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        const latestConfig = getSecurityConfig();
+        setSecurityConfig(latestConfig);
+        if (latestConfig.isLockEnabled) {
+          setIsLocked(true);
+        }
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   if (!isReady) {
@@ -74,6 +106,15 @@ export default function RootLayout() {
           }}
         />
       </Stack>
+
+      {/* Tela de Bloqueio se a Segurança estiver ativa */}
+      {isLocked && securityConfig.isLockEnabled && (
+        <SecurityLockScreen
+          storedPin={securityConfig.pin}
+          useBiometrics={securityConfig.useBiometrics}
+          onUnlock={() => setIsLocked(false)}
+        />
+      )}
     </SafeAreaProvider>
   );
 }
