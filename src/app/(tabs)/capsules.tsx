@@ -38,7 +38,7 @@ export default function CapsulesScreen() {
   const renderHeader = () => (
     <View style={styles.header}>
       <View style={styles.tag}>
-        <Ionicons name="heart" size={12} color={COLORS.primary} />
+        <Ionicons name="heart" size={12} color={COLORS.ruby} />
         <Text style={styles.tagText}>CÁPSULAS DE AFETO</Text>
       </View>
       <Text style={styles.title}>Abra Quando... 💌</Text>
@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.primary,
+    fontWeight: '800',
+    color: COLORS.ruby,
     letterSpacing: 1.2,
   },
   title: {

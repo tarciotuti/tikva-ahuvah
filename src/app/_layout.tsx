@@ -46,7 +46,28 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="note/[id]"
+          options={{
+            headerShown: false,
+            presentation: 'card',
+          }}
+        />
+        <Stack.Screen
           name="capsule/[id]"
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name="new-note"
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+          }}
+        />
+        <Stack.Screen
+          name="new-memory"
           options={{
             headerShown: false,
             presentation: 'modal',

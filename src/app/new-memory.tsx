@@ -15,9 +15,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, CATEGORIES } from '../../constants/theme';
-import { saveMemory } from '../../services/database';
-import { saveImageToAppDirectory } from '../../services/backup';
+import { COLORS, CATEGORIES } from '../constants/theme';
+import { saveMemory } from '../services/database';
+import { saveImageToAppDirectory } from '../services/backup';
 
 export default function NewMemoryScreen() {
   const [title, setTitle] = useState('');
@@ -113,17 +113,10 @@ export default function NewMemoryScreen() {
         isFavorite,
       });
 
-      // Limpar formulário
-      setTitle('');
-      setDescription('');
-      setLocation('');
-      setPhotoUri(null);
-      setIsFavorite(false);
-
       Alert.alert('Memória Guardada! ✨', 'Este momento foi adicionado ao seu baú com sucesso.', [
         {
-          text: 'Ver no Baú',
-          onPress: () => router.push('/(tabs)'),
+          text: 'Concluir',
+          onPress: () => router.back(),
         },
       ]);
     } catch (error) {
@@ -135,18 +128,25 @@ export default function NewMemoryScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-          <Text style={styles.headerSubtitle}>NOVO REGISTRO</Text>
-          <Text style={styles.headerTitle}>Guardar uma Memória ✨</Text>
-          <Text style={styles.headerDesc}>
-            Registre momentos que fizeram seu coração sorrir. Eles ficarão salvos aqui para sempre.
-          </Text>
+        {/* Barra Superior */}
+        <View style={styles.topBar}>
+          <TouchableOpacity
+            style={styles.circleButton}
+            activeOpacity={0.7}
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={22} color={COLORS.text} />
+          </TouchableOpacity>
+          <Text style={styles.topBarTitle}>Guardar Nova Memória</Text>
+          <View style={{ width: 40 }} />
+        </View>
 
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
           {/* Área da Foto */}
           <View style={styles.section}>
             <Text style={styles.label}>Foto do Momento (Opcional)</Text>
@@ -188,7 +188,7 @@ export default function NewMemoryScreen() {
             <Text style={styles.label}>Título da Memória *</Text>
             <TextInput
               style={styles.input}
-              placeholder="Ex: Aquela tarde no parque, Meu primeiro dia..."
+              placeholder="Ex: Aquela tarde no parque, Culto especial..."
               placeholderTextColor={COLORS.textMuted}
               value={title}
               onChangeText={setTitle}
@@ -242,7 +242,7 @@ export default function NewMemoryScreen() {
               <Text style={styles.label}>Lugar / Cidade</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Ex: Praia, Em casa"
+                placeholder="Ex: Praia, Igreja, Em casa"
                 placeholderTextColor={COLORS.textMuted}
                 value={location}
                 onChangeText={setLocation}
@@ -274,7 +274,7 @@ export default function NewMemoryScreen() {
             <Ionicons
               name={isFavorite ? 'heart' : 'heart-outline'}
               size={24}
-              color={isFavorite ? COLORS.heart : COLORS.textMuted}
+              color={isFavorite ? COLORS.ruby : COLORS.textMuted}
             />
             <View style={{ marginLeft: 12, flex: 1 }}>
               <Text style={styles.favToggleTitle}>Destacar como Favorita</Text>
@@ -307,28 +307,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.borderLight,
+  },
+  topBarTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.text,
+  },
+  circleButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingTop: 16,
     paddingBottom: 40,
-  },
-  headerSubtitle: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.primary,
-    letterSpacing: 1.2,
-  },
-  headerTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: COLORS.text,
-    marginBottom: 4,
-  },
-  headerDesc: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    marginBottom: 20,
-    lineHeight: 20,
   },
   section: {
     marginBottom: 16,
@@ -349,7 +355,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontSize: 15,
+    fontSize: 14,
     color: COLORS.text,
   },
   textArea: {

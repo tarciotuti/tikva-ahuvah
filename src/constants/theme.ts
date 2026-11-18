@@ -1,36 +1,39 @@
 export const COLORS = {
-  // Backgrounds
-  background: '#FAF7F2',
+  // Backgrounds acolhedores estilo linho e papel nobre
+  background: '#F8F6F1',
   surface: '#FFFFFF',
-  surfaceSubtle: '#F4EFEA',
+  surfaceSubtle: '#F0ECE4',
   
-  // Accents & Brand
-  primary: '#C86D56',          // Terracota suave e caloroso
-  primaryDark: '#A8533E',
-  primaryLight: '#FBECE6',
-  primaryTint: '#F6DDD4',
+  // Verde Botânico / Esmeralda Sereno (Identidade Principal)
+  primary: '#24523F',          // Verde esmeralda florestal profundo
+  primaryDark: '#173B2C',
+  primaryMedium: '#316B54',
+  primaryLight: '#EBF4EF',      // Fundo suave sálvia
+  primaryTint: '#C8DFD4',
   
-  secondary: '#6A8A73',        // Verde sálvia relaxante
-  secondaryLight: '#EDF4EE',
+  // Vermelho Rubi / Rosé Veludo (Toques de Afeto & Destaques)
+  ruby: '#9E2A3B',             // Vermelho rubi sofisticado
+  rubyDark: '#7A1C2B',
+  rubyLight: '#FAF0F2',        // Fundo delicado rosé
+  rubyTint: '#F2CDD4',
   
-  accentGold: '#E6A540',       // Dourado afetuoso / sol
-  accentGoldLight: '#FEF6E8',
-  
-  accentPlum: '#8A5D6B',       // Tom ameixa suave
-  accentPlumLight: '#F7EDF1',
+  // Dourado Esperança / Luz Espiritual
+  gold: '#C28E34',             // Dourado clássico e acolhedor
+  goldLight: '#FAF4E8',
+  goldTint: '#EED9B2',
 
-  // Neutros e Tipografia
-  text: '#2C2523',             // Café escuro profundo
-  textSecondary: '#6B625D',    // Cinza quente
-  textMuted: '#9E958F',        // Cinza suave
-  border: '#ECE5DC',
-  borderLight: '#F2ECE4',
+  // Tipografia e Neutros
+  text: '#1C2621',             // Carvão botânico
+  textSecondary: '#57665F',    // Verde pedra suave
+  textMuted: '#8E9C95',        // Sálvia apagado
+  border: '#E3DDD3',
+  borderLight: '#ECE7DE',
   
   // Estados
-  cardShadow: 'rgba(50, 30, 20, 0.06)',
+  cardShadow: 'rgba(23, 59, 44, 0.07)',
   white: '#FFFFFF',
   danger: '#D9534F',
-  heart: '#E25555',
+  heart: '#9E2A3B',
 };
 
 export const CATEGORIES: { label: string; icon: string }[] = [
@@ -41,3 +44,11 @@ export const CATEGORIES: { label: string; icon: string }[] = [
   { label: 'Conquistas', icon: 'trophy' },
   { label: 'Viagens & Aventuras', icon: 'compass' },
 ];
+
+export const NOTE_TYPES = [
+  { id: 'todas', label: 'Todas', icon: 'layers-outline' },
+  { id: 'pregacao', label: 'Pregações', icon: 'book-outline', color: COLORS.primary, bg: COLORS.primaryLight },
+  { id: 'devocional', label: 'Devocionais', icon: 'heart-outline', color: COLORS.ruby, bg: COLORS.rubyLight },
+  { id: 'estudo', label: 'Estudos', icon: 'school-outline', color: COLORS.gold, bg: COLORS.goldLight },
+  { id: 'geral', label: 'Anotações', icon: 'create-outline', color: COLORS.primaryMedium, bg: COLORS.surfaceSubtle },
+] as const;

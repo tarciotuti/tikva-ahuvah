@@ -1,11 +1,45 @@
-import { Memory, Capsule } from '../types';
+import { Memory, Capsule, Note } from '../types';
+
+export interface DailyVerse {
+  reference: string;
+  text: string;
+  theme: string;
+}
+
+export const DAILY_VERSES: DailyVerse[] = [
+  {
+    reference: 'Isaías 40:31',
+    text: 'Mas aqueles que esperam no Senhor renovam as suas forças. Voam alto como águias; correm e não ficam exaustos, andam e não se cansam.',
+    theme: 'Esperança & Força',
+  },
+  {
+    reference: 'Jeremias 29:11',
+    text: 'Porque sou eu que conheço os planos que tenho para vocês, diz o Senhor, planos de fazê-los prosperar e não de causar dano, planos de dar a vocês esperança e um futuro.',
+    theme: 'Futuro & Paz',
+  },
+  {
+    reference: 'Filipenses 4:6-7',
+    text: 'Não andem ansiosos por coisa alguma, mas em tudo apresentem seus pedidos a Deus. E a paz de Deus, que excede todo o entendimento, guardará o coração de vocês.',
+    theme: 'Coração Sereno',
+  },
+  {
+    reference: 'Salmos 46:1',
+    text: 'Deus é o nosso refúgio e a nossa fortaleza, auxílio sempre presente na adversidade.',
+    theme: 'Refúgio Seguro',
+  },
+  {
+    reference: 'Lamentações 3:22-23',
+    text: 'As misericórdias do Senhor são a causa de não sermos consumidos, porque as suas compaixões não têm fim; renovam-se a cada manhã. Grande é a tua fidelidade!',
+    theme: 'Novos Começos',
+  },
+];
 
 export const INITIAL_MEMORIES: Memory[] = [
   {
     id: 'mem-1',
     title: 'O Primeiro Capítulo deste Diário',
     description: 
-      'Este aplicativo foi criado especialmente para você, com muito carinho. ' +
+      'Este aplicativo foi criado especialmente para você, com muito carinho e oração. ' +
       'A vida é cheia de pequenos instantes que merecem ser guardados: os risos soltos, ' +
       'as vitórias que pareciam difíceis, as viagens inesperadas e a beleza de quem você é. ' +
       'Que este seja o seu cantinho seguro para lembrar de onde veio e se orgulhar de quem você está se tornando.',
@@ -69,7 +103,7 @@ export const INITIAL_CAPSULES: Capsule[] = [
       'Se você está lendo isso, é porque aquela vozinha da insegurança tentou sussurrar que você não é capaz. ' +
       'Não escute ela.\n\n' +
       'Olhe para trás e veja o quanto você já caminhou. Cada tropeço que você superou, cada desafio que parecia ' +
-      'impossível e que você venceu com a sua coragem e honestidade.\n\n' +
+      'impossível e que você venceu com a sua coragem e fé.\n\n' +
       'Você tem inteligência, sensibilidade e um talento único. Confie no seu processo e nos seus passos. ' +
       'Eu acredito em você, de olhos fechados.',
     quote: 'Nunca diminua o seu brilho para caber na sombra de ninguém.',
@@ -118,7 +152,7 @@ export const INITIAL_CAPSULES: Capsule[] = [
     content: 
       'Dar frio na barriga é o sinal de que você está viva e crescendo!\n\n' +
       'Seja uma prova, um novo emprego, uma mudança ou uma decisão corajosa: vá com medo mesmo, mas vá com toda a sua dedicação. ' +
-      'Você se preparou, você merece estar aí e nada que for seu deixará de encontrar o seu caminho.\n\n' +
+      'Você se preparou, você merece estar aí e o Senhor guiará cada um dos seus passos.\n\n' +
       'Erguer a cabeça e dar o primeiro passo: você já venceu!',
     quote: 'A coragem não é a ausência de medo, mas a certeza de que algo é maior que ele.',
     category: 'futuro',
@@ -133,13 +167,60 @@ export const INITIAL_CAPSULES: Capsule[] = [
     content: 
       'Mais uma volta ao sol!\n\n' +
       'Que orgulho e que alegria é ver mais um ano da sua vida se completando. ' +
-      'Desejo que este novo ciclo venha repleto de saúde, gargalhadas sinceras, conquistas merecidas e momentos leves.\n\n' +
-      'Celebre com intensidade, coma o que tiver vontade e celebre a pessoa incrível que você é. Parabéns hoje e sempre!',
+      'Desejo que este novo ciclo venha repleto de saúde, gargalhadas sinceras, conquistas merecidas e momentos leves sob a bênção de Deus.\n\n' +
+      'Celebre com intensidade, coma o que tiver vontade e comemore a pessoa incrível que você é. Parabéns hoje e sempre!',
     quote: 'Que o seu novo ano seja tão especial e radiante quanto o seu coração.',
     authorNote: 'Com todo amor e respeito',
     category: 'geral',
     icon: 'gift',
     isOpened: false,
     createdAt: Date.now(),
+  },
+];
+
+export const INITIAL_NOTES: Note[] = [
+  {
+    id: 'note-1',
+    title: 'A Esperança que Renova as Forças',
+    type: 'pregacao',
+    scripture: 'Isaías 40:29-31',
+    speaker: 'Mensagem de Domingo',
+    content: 
+      'Pontos marcantes da palavra:\n\n' +
+      '1. Até os jovens se cansam e ficam exaustos, mas a nossa força não vem do nosso próprio braço, vem do Senhor.\n' +
+      '2. "Esperar no Senhor" não é ficar parada sem fazer nada; é descansar o coração enquanto as mãos continuam trabalhando com fidelidade.\n' +
+      '3. As asas da águia: voar acima das nuvens da tempestade em vez de se debater nelas.\n\n' +
+      'Aplicação prática: Naqueles dias em que a faculdade ou o trabalho pesarem, lembrar de entregar o controle antes de ir dormir.',
+    isFavorite: true,
+    date: '2024-02-18',
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 20,
+  },
+  {
+    id: 'note-2',
+    title: 'A Graça das Manhãs Silenciosas',
+    type: 'devocional',
+    scripture: 'Lamentações 3:22-24',
+    speaker: 'Momento Pessoal',
+    content: 
+      'Hoje o dia começou lembrando que cada manhã é um recomeço em branco oferecido por Deus.\n\n' +
+      'Não preciso carregar as falhas ou as frustrações de ontem para o dia de hoje. A misericórdia dele se renova agora cedo. ' +
+      'Que a minha oração seja: "Ensina-me a viver este dia com leveza, gratidão e um coração atento a quem precisa de amor."',
+    isFavorite: false,
+    date: '2024-04-10',
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 10,
+  },
+  {
+    id: 'note-3',
+    title: 'Ideias, Livros e Sonhos para Cultivar',
+    type: 'geral',
+    content: 
+      'Lista de inspirações e planos para os próximos meses:\n\n' +
+      '• Livros para ler: biografias inspiradoras, teologia prática e um bom romance clássico.\n' +
+      '• Hobbies para experimentar: cerâmica ou uma aula de culinária com amigos.\n' +
+      '• Lugares para visitar: aquele café tranquilo com jardim no centro.\n' +
+      '• Lembrete: celebrar as pequenas vitórias do dia a dia, mesmo aquelas que ninguém mais viu!',
+    isFavorite: true,
+    date: '2024-05-01',
+    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 2,
   },
 ];

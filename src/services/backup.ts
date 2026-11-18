@@ -3,9 +3,6 @@ import * as Sharing from 'expo-sharing';
 import { getAllDataForBackup, restoreDataFromBackup } from './database';
 import { BackupPayload } from '../types';
 
-/**
- * Salva a foto escolhida permanentemente no diretório de dados do app
- */
 export async function saveImageToAppDirectory(sourceUri: string): Promise<string> {
   try {
     const photosDir = `${FileSystem.documentDirectory}photos/`;
@@ -25,25 +22,21 @@ export async function saveImageToAppDirectory(sourceUri: string): Promise<string
     return destinationUri;
   } catch (error) {
     console.error('Erro ao salvar foto no armazenamento local:', error);
-    // Se falhar a cópia, retorna a URI original como fallback
     return sourceUri;
   }
 }
 
-/**
- * Exporta todo o banco de dados para um arquivo JSON e abre o menu de compartilhamento
- * nativo do Android, permitindo salvar no Google Drive, enviar por e-mail, etc.
- */
 export async function exportBackup(): Promise<{ success: boolean; message: string }> {
   try {
-    const { memories, capsules } = getAllDataForBackup();
+    const { memories, capsules, notes } = getAllDataForBackup();
 
     const payload: BackupPayload = {
-      version: 1,
-      appName: 'Memórias & Afeto',
+      version: 2,
+      appName: 'Memórias, Fé & Afeto',
       exportedAt: new Date().toISOString(),
       memories,
       capsules,
+      notes,
     };
 
     const jsonString = JSON.stringify(payload, null, 2);
@@ -63,7 +56,7 @@ export async function exportBackup(): Promise<{ success: boolean; message: strin
 
     await Sharing.shareAsync(backupFilePath, {
       mimeType: 'application/json',
-      dialogTitle: 'Salvar Backup das Memórias (Google Drive ou Arquivo)',
+      dialogTitle: 'Salvar Backup das Memórias e Caderno no Google Drive',
       UTI: 'public.json',
     });
 
@@ -80,9 +73,6 @@ export async function exportBackup(): Promise<{ success: boolean; message: strin
   }
 }
 
-/**
- * Restaura dados a partir de uma string JSON de backup
- */
 export function restoreBackup(jsonString: string): { success: boolean; message: string; count?: number } {
   try {
     const data = JSON.parse(jsonString);
@@ -91,11 +81,11 @@ export function restoreBackup(jsonString: string): { success: boolean; message: 
       throw new Error('Formato de arquivo inválido. O arquivo de backup deve conter memórias e cápsulas.');
     }
 
-    restoreDataFromBackup(data.memories, data.capsules);
+    restoreDataFromBackup(data.memories, data.capsules, data.notes || []);
 
     return {
       success: true,
-      message: `Restauração concluída! ${data.memories.length} memórias e ${data.capsules.length} cápsulas recuperadas.`,
+      message: `Restauração concluída! ${data.memories.length} memórias, ${data.capsules.length} cápsulas e ${(data.notes || []).length} anotações recuperadas.`,
       count: data.memories.length,
     };
   } catch (error: any) {

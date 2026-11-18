@@ -36,14 +36,14 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({
             <Ionicons
               name={memory.isFavorite ? 'heart' : 'heart-outline'}
               size={20}
-              color={memory.isFavorite ? COLORS.heart : COLORS.white}
+              color={memory.isFavorite ? COLORS.ruby : COLORS.white}
             />
           </TouchableOpacity>
         </View>
       ) : (
         <View style={styles.noImageHeader}>
           <View style={styles.quoteIconBadge}>
-            <Ionicons name="chatbubble-ellipses-outline" size={16} color={COLORS.primary} />
+            <Ionicons name="sparkles" size={16} color={COLORS.primary} />
           </View>
           <TouchableOpacity
             style={styles.favButton}
@@ -53,7 +53,7 @@ export const MemoryCard: React.FC<MemoryCardProps> = ({
             <Ionicons
               name={memory.isFavorite ? 'heart' : 'heart-outline'}
               size={20}
-              color={memory.isFavorite ? COLORS.heart : COLORS.textMuted}
+              color={memory.isFavorite ? COLORS.ruby : COLORS.textMuted}
             />
           </TouchableOpacity>
         </View>
@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.borderLight,
     elevation: 2,
-    shadowColor: '#301810',
+    shadowColor: COLORS.cardShadow,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.06,
     shadowRadius: 10,
   },
   imageContainer: {
@@ -122,9 +122,10 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     alignItems: 'center',
     justifyContent: 'center',
+    elevation: 2,
   },
   noImageHeader: {
     flexDirection: 'row',
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '700',
     color: COLORS.primary,
   },
   dateRow: {
@@ -196,6 +197,6 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 12,
     color: COLORS.primary,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });

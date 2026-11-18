@@ -29,7 +29,7 @@ export const CapsuleCard: React.FC<CapsuleCardProps> = ({ capsule, onPress }) =>
           <Ionicons
             name={(capsule.icon || 'mail') as any}
             size={22}
-            color={capsule.isOpened ? COLORS.secondary : COLORS.primary}
+            color={capsule.isOpened ? COLORS.primary : COLORS.ruby}
           />
         </View>
 
@@ -42,7 +42,7 @@ export const CapsuleCard: React.FC<CapsuleCardProps> = ({ capsule, onPress }) =>
           <Ionicons
             name={capsule.isOpened ? 'checkmark-circle-outline' : 'lock-closed'}
             size={12}
-            color={capsule.isOpened ? COLORS.secondary : COLORS.primary}
+            color={capsule.isOpened ? COLORS.primary : COLORS.ruby}
           />
           <Text
             style={[
@@ -50,7 +50,7 @@ export const CapsuleCard: React.FC<CapsuleCardProps> = ({ capsule, onPress }) =>
               capsule.isOpened ? styles.badgeTextOpened : styles.badgeTextSealed,
             ]}
           >
-            {capsule.isOpened ? 'Já aberta' : 'Lacrada'}
+            {capsule.isOpened ? 'Já aberta' : 'Lacrada com carinho'}
           </Text>
         </View>
       </View>
@@ -74,19 +74,19 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     borderWidth: 1,
     elevation: 2,
-    shadowColor: '#301810',
+    shadowColor: COLORS.cardShadow,
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.06,
     shadowRadius: 8,
   },
   cardSealed: {
     backgroundColor: COLORS.surface,
-    borderColor: COLORS.primaryTint,
+    borderColor: COLORS.rubyTint,
   },
   cardOpened: {
     backgroundColor: COLORS.surface,
     borderColor: COLORS.borderLight,
-    opacity: 0.9,
+    opacity: 0.92,
   },
   topRow: {
     flexDirection: 'row',
@@ -102,34 +102,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconSealed: {
-    backgroundColor: COLORS.primaryLight,
+    backgroundColor: COLORS.rubyLight,
   },
   iconOpened: {
-    backgroundColor: COLORS.secondaryLight,
+    backgroundColor: COLORS.primaryLight,
   },
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 9,
     borderRadius: 12,
     gap: 4,
   },
   badgeSealed: {
-    backgroundColor: COLORS.primaryLight,
+    backgroundColor: COLORS.rubyLight,
   },
   badgeOpened: {
-    backgroundColor: COLORS.secondaryLight,
+    backgroundColor: COLORS.primaryLight,
   },
   badgeText: {
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   badgeTextSealed: {
-    color: COLORS.primary,
+    color: COLORS.ruby,
   },
   badgeTextOpened: {
-    color: COLORS.secondary,
+    color: COLORS.primary,
   },
   title: {
     fontSize: 16,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: COLORS.primary,
+    fontWeight: '700',
+    color: COLORS.ruby,
   },
 });

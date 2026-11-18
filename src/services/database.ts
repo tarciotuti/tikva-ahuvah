@@ -1,6 +1,6 @@
 import * as SQLite from 'expo-sqlite';
-import { Memory, Capsule } from '../types';
-import { INITIAL_MEMORIES, INITIAL_CAPSULES } from '../data/initialData';
+import { Memory, Capsule, Note } from '../types';
+import { INITIAL_MEMORIES, INITIAL_CAPSULES, INITIAL_NOTES } from '../data/initialData';
 
 let dbInstance: SQLite.SQLiteDatabase | null = null;
 
@@ -41,12 +41,23 @@ export function initDatabase() {
       icon TEXT NOT NULL,
       created_at INTEGER NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS notes (
+      id TEXT PRIMARY KEY NOT NULL,
+      title TEXT NOT NULL,
+      type TEXT NOT NULL,
+      scripture TEXT,
+      speaker TEXT,
+      content TEXT NOT NULL,
+      is_favorite INTEGER NOT NULL DEFAULT 0,
+      date TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
   `);
 
-  // Verificar se há memórias para popular pela primeira vez
+  // Popular memórias se vazias
   const countRow = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM memories');
   if (countRow && countRow.count === 0) {
-    // Inserir memórias iniciais
     for (const mem of INITIAL_MEMORIES) {
       db.runSync(
         `INSERT INTO memories (id, title, description, date, photo_uri, category, is_favorite, location, created_at)
@@ -66,7 +77,7 @@ export function initDatabase() {
     }
   }
 
-  // Verificar se há cápsulas para popular pela primeira vez
+  // Popular cápsulas se vazias
   const capsuleCountRow = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM capsules');
   if (capsuleCountRow && capsuleCountRow.count === 0) {
     for (const cap of INITIAL_CAPSULES) {
@@ -85,6 +96,28 @@ export function initDatabase() {
           cap.category,
           cap.icon,
           cap.createdAt,
+        ]
+      );
+    }
+  }
+
+  // Popular notas/pregações se vazias
+  const notesCountRow = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM notes');
+  if (notesCountRow && notesCountRow.count === 0) {
+    for (const note of INITIAL_NOTES) {
+      db.runSync(
+        `INSERT INTO notes (id, title, type, scripture, speaker, content, is_favorite, date, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          note.id,
+          note.title,
+          note.type,
+          note.scripture || null,
+          note.speaker || null,
+          note.content,
+          note.isFavorite ? 1 : 0,
+          note.date,
+          note.createdAt,
         ]
       );
     }
@@ -250,22 +283,138 @@ export function markCapsuleOpened(id: string): void {
   db.runSync('UPDATE capsules SET is_opened = 1 WHERE id = ?', [id]);
 }
 
-// ---------------- BACKUP & RESTAURAÇÃO ---------------- //
+// ---------------- NOTAS & PREGAÇÕES ---------------- //
 
-export function getAllDataForBackup(): { memories: Memory[]; capsules: Capsule[] } {
+export function getNotes(type?: string, search?: string): Note[] {
+  const db = getDatabase();
+  let query = 'SELECT * FROM notes WHERE 1=1';
+  const params: (string | number)[] = [];
+
+  if (type && type !== 'todas') {
+    query += ' AND type = ?';
+    params.push(type);
+  }
+
+  if (search && search.trim().length > 0) {
+    query += ' AND (title LIKE ? OR content LIKE ? OR scripture LIKE ? OR speaker LIKE ?)';
+    const term = `%${search.trim()}%`;
+    params.push(term, term, term, term);
+  }
+
+  query += ' ORDER BY is_favorite DESC, date DESC, created_at DESC';
+
+  const rows = db.getAllSync<any>(query, params);
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    type: row.type,
+    scripture: row.scripture || undefined,
+    speaker: row.speaker || undefined,
+    content: row.content,
+    isFavorite: Boolean(row.is_favorite),
+    date: row.date,
+    createdAt: row.created_at,
+  }));
+}
+
+export function getNoteById(id: string): Note | null {
+  const db = getDatabase();
+  const row = db.getFirstSync<any>('SELECT * FROM notes WHERE id = ?', [id]);
+  if (!row) return null;
+
   return {
-    memories: getMemories('Todas'),
-    capsules: getCapsules(),
+    id: row.id,
+    title: row.title,
+    type: row.type,
+    scripture: row.scripture || undefined,
+    speaker: row.speaker || undefined,
+    content: row.content,
+    isFavorite: Boolean(row.is_favorite),
+    date: row.date,
+    createdAt: row.created_at,
   };
 }
 
-export function restoreDataFromBackup(memories: Memory[], capsules: Capsule[]): void {
+export function saveNote(note: Omit<Note, 'id' | 'createdAt'>): Note {
+  const db = getDatabase();
+  const id = 'note_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+  const createdAt = Date.now();
+
+  db.runSync(
+    `INSERT INTO notes (id, title, type, scripture, speaker, content, is_favorite, date, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      id,
+      note.title,
+      note.type,
+      note.scripture || null,
+      note.speaker || null,
+      note.content,
+      note.isFavorite ? 1 : 0,
+      note.date,
+      createdAt,
+    ]
+  );
+
+  return {
+    ...note,
+    id,
+    createdAt,
+  };
+}
+
+export function updateNote(note: Note): void {
+  const db = getDatabase();
+  db.runSync(
+    `UPDATE notes 
+     SET title = ?, type = ?, scripture = ?, speaker = ?, content = ?, is_favorite = ?, date = ?
+     WHERE id = ?`,
+    [
+      note.title,
+      note.type,
+      note.scripture || null,
+      note.speaker || null,
+      note.content,
+      note.isFavorite ? 1 : 0,
+      note.date,
+      note.id,
+    ]
+  );
+}
+
+export function toggleFavoriteNote(id: string): boolean {
+  const db = getDatabase();
+  const row = db.getFirstSync<any>('SELECT is_favorite FROM notes WHERE id = ?', [id]);
+  if (!row) return false;
+
+  const nextVal = row.is_favorite ? 0 : 1;
+  db.runSync('UPDATE notes SET is_favorite = ? WHERE id = ?', [nextVal, id]);
+  return Boolean(nextVal);
+}
+
+export function deleteNote(id: string): void {
+  const db = getDatabase();
+  db.runSync('DELETE FROM notes WHERE id = ?', [id]);
+}
+
+// ---------------- BACKUP & RESTAURAÇÃO ---------------- //
+
+export function getAllDataForBackup(): { memories: Memory[]; capsules: Capsule[]; notes: Note[] } {
+  return {
+    memories: getMemories('Todas'),
+    capsules: getCapsules(),
+    notes: getNotes('todas'),
+  };
+}
+
+export function restoreDataFromBackup(memories: Memory[], capsules: Capsule[], notes: Note[] = []): void {
   const db = getDatabase();
 
   db.execSync('BEGIN TRANSACTION;');
   try {
     db.runSync('DELETE FROM memories;');
     db.runSync('DELETE FROM capsules;');
+    db.runSync('DELETE FROM notes;');
 
     for (const mem of memories) {
       db.runSync(
@@ -301,6 +450,24 @@ export function restoreDataFromBackup(memories: Memory[], capsules: Capsule[]): 
           cap.category,
           cap.icon,
           cap.createdAt || Date.now(),
+        ]
+      );
+    }
+
+    for (const note of notes) {
+      db.runSync(
+        `INSERT INTO notes (id, title, type, scripture, speaker, content, is_favorite, date, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          note.id,
+          note.title,
+          note.type,
+          note.scripture || null,
+          note.speaker || null,
+          note.content,
+          note.isFavorite ? 1 : 0,
+          note.date,
+          note.createdAt || Date.now(),
         ]
       );
     }

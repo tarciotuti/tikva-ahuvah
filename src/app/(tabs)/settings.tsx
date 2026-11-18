@@ -15,11 +15,12 @@ import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { exportBackup, restoreBackup } from '../../services/backup';
-import { getMemories, getCapsules } from '../../services/database';
+import { getMemories, getCapsules, getNotes } from '../../services/database';
 
 export default function SettingsScreen() {
   const [stats, setStats] = useState({
     totalMemories: 0,
+    totalNotes: 0,
     favorites: 0,
     openedCapsules: 0,
     totalCapsules: 0,
@@ -33,9 +34,11 @@ export default function SettingsScreen() {
     try {
       const memories = getMemories('Todas');
       const capsules = getCapsules();
+      const notes = getNotes('todas');
       setStats({
         totalMemories: memories.length,
-        favorites: memories.filter((m) => m.isFavorite).length,
+        totalNotes: notes.length,
+        favorites: memories.filter((m) => m.isFavorite).length + notes.filter((n) => n.isFavorite).length,
         openedCapsules: capsules.filter((c) => c.isOpened).length,
         totalCapsules: capsules.length,
       });
@@ -68,7 +71,7 @@ export default function SettingsScreen() {
 
     Alert.alert(
       'Confirmar Restauração',
-      'Isso irá substituir os dados atuais pelos dados do arquivo de backup. Deseja continuar?',
+      'Isso irá restaurar os dados do arquivo de backup. Deseja continuar?',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -99,47 +102,53 @@ export default function SettingsScreen() {
         {/* Card de Dedicatória */}
         <View style={styles.dedicationCard}>
           <View style={styles.dedicationIconCircle}>
-            <Ionicons name="sparkles" size={20} color={COLORS.primary} />
+            <Ionicons name="sparkles" size={20} color={COLORS.gold} />
           </View>
           <Text style={styles.dedicationTitle}>Um Presente para Você</Text>
           <Text style={styles.dedicationText}>
-            {'Este diário foi pensado para ser o seu porto seguro de boas lembranças. Que você nunca se esqueça da pessoa incrível que é, da sua força e de tudo o que ainda vai conquistar.'}
+            {'Este diário foi pensado para ser o seu porto seguro de boas lembranças e crescimento espiritual. Que você nunca se esqueça da pessoa preciosa que é, da sua força e do propósito lindo que Deus tem para a sua vida.'}
           </Text>
-          <Text style={styles.dedicationSign}>Com todo o meu amor e admiração ❤️</Text>
+          <Text style={styles.dedicationSign}>Com todo o meu amor, orações e carinho ❤️</Text>
         </View>
 
         {/* Estatísticas */}
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
-            <Ionicons name="images" size={20} color={COLORS.primary} />
+            <Ionicons name="images" size={18} color={COLORS.primary} />
             <Text style={styles.statNumber}>{stats.totalMemories}</Text>
             <Text style={styles.statLabel}>Memórias</Text>
           </View>
 
           <View style={styles.statCard}>
-            <Ionicons name="heart" size={20} color={COLORS.heart} />
+            <Ionicons name="book" size={18} color={COLORS.primaryMedium} />
+            <Text style={styles.statNumber}>{stats.totalNotes}</Text>
+            <Text style={styles.statLabel}>Pregações</Text>
+          </View>
+
+          <View style={styles.statCard}>
+            <Ionicons name="heart" size={18} color={COLORS.ruby} />
             <Text style={styles.statNumber}>{stats.favorites}</Text>
             <Text style={styles.statLabel}>Favoritas</Text>
           </View>
 
           <View style={styles.statCard}>
-            <Ionicons name="mail-open" size={20} color={COLORS.secondary} />
+            <Ionicons name="mail-open" size={18} color={COLORS.gold} />
             <Text style={styles.statNumber}>{stats.openedCapsules}</Text>
-            <Text style={styles.statLabel}>Cápsulas Lidas</Text>
+            <Text style={styles.statLabel}>Cartas Lidas</Text>
           </View>
         </View>
 
         {/* Seção de Backup */}
         <View style={styles.sectionCard}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="shield-checkmark" size={22} color={COLORS.secondary} />
+            <Ionicons name="shield-checkmark" size={22} color={COLORS.primary} />
             <Text style={styles.sectionTitle}>Backup à Prova de 10 Anos</Text>
           </View>
 
           <Text style={styles.sectionDescription}>
-            Suas memórias e fotos moram no seu celular e não dependem de servidores de terceiros. 
+            Suas memórias, fotos e anotações moram no seu celular e não dependem de servidores externos. 
             Você pode salvar uma cópia de segurança direto no seu <Text style={{ fontWeight: '700' }}>Google Drive</Text> para 
-            nunca perder nada, mesmo trocando de aparelho.
+            nunca perder nada ao longo dos anos.
           </Text>
 
           <TouchableOpacity
@@ -168,7 +177,7 @@ export default function SettingsScreen() {
         <View style={styles.infoBox}>
           <Ionicons name="lock-closed-outline" size={18} color={COLORS.textMuted} />
           <Text style={styles.infoText}>
-            100% offline e privado. Somente você tem acesso aos seus textos e registros.
+            100% offline, seguro e privado. Somente você tem acesso aos seus textos, orações e registros.
           </Text>
         </View>
       </ScrollView>
@@ -237,7 +246,7 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '800',
     color: COLORS.primary,
     letterSpacing: 1.2,
   },
@@ -266,7 +275,7 @@ const styles = StyleSheet.create({
   },
   dedicationTitle: {
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: '800',
     color: COLORS.primaryDark,
     marginBottom: 6,
   },
@@ -279,34 +288,36 @@ const styles = StyleSheet.create({
   },
   dedicationSign: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     color: COLORS.primary,
   },
   statsRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
     marginBottom: 20,
   },
   statCard: {
     flex: 1,
     backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    paddingVertical: 14,
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 6,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.borderLight,
   },
   statNumber: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     color: COLORS.text,
     marginTop: 4,
   },
   statLabel: {
-    fontSize: 11,
-    fontWeight: '600',
+    fontSize: 10,
+    fontWeight: '700',
     color: COLORS.textSecondary,
     marginTop: 2,
+    textAlign: 'center',
   },
   sectionCard: {
     backgroundColor: COLORS.surface,
