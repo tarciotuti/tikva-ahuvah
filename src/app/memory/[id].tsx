@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -17,14 +17,7 @@ import { getMemoryById, toggleFavoriteMemory, deleteMemory } from '../../service
 
 export default function MemoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [memory, setMemory] = useState<Memory | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      const data = getMemoryById(id);
-      setMemory(data);
-    }
-  }, [id]);
+  const [memory, setMemory] = useState<Memory | null>(() => (id ? getMemoryById(id) : null));
 
   if (!memory) {
     return (

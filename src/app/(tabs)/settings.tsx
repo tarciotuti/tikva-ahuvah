@@ -103,8 +103,7 @@ export default function SettingsScreen() {
           </View>
           <Text style={styles.dedicationTitle}>Um Presente para Você</Text>
           <Text style={styles.dedicationText}>
-            "Este diário foi pensado para ser o seu porto seguro de boas lembranças. 
-            Que você nunca se esqueça da pessoa incrível que é, da sua força e de tudo o que ainda vai conquistar."
+            {'Este diário foi pensado para ser o seu porto seguro de boas lembranças. Que você nunca se esqueça da pessoa incrível que é, da sua força e de tudo o que ainda vai conquistar.'}
           </Text>
           <Text style={styles.dedicationSign}>Com todo o meu amor e admiração ❤️</Text>
         </View>

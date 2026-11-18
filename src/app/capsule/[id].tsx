@@ -15,19 +15,13 @@ import { getCapsuleById, markCapsuleOpened } from '../../services/database';
 
 export default function CapsuleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [capsule, setCapsule] = useState<Capsule | null>(null);
+  const [capsule] = useState<Capsule | null>(() => (id ? getCapsuleById(id) : null));
 
   useEffect(() => {
-    if (id) {
-      const data = getCapsuleById(id);
-      if (data) {
-        setCapsule(data);
-        if (!data.isOpened) {
-          markCapsuleOpened(data.id);
-        }
-      }
+    if (capsule && !capsule.isOpened) {
+      markCapsuleOpened(capsule.id);
     }
-  }, [id]);
+  }, [capsule]);
 
   if (!capsule) {
     return (
@@ -79,7 +73,7 @@ export default function CapsuleDetailScreen() {
               color={COLORS.primary}
               style={{ opacity: 0.4, marginBottom: 6 }}
             />
-            <Text style={styles.quoteText}>"{capsule.quote}"</Text>
+            <Text style={styles.quoteText}>&ldquo;{capsule.quote}&rdquo;</Text>
           </View>
         )}
 
