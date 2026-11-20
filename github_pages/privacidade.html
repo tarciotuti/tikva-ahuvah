@@ -4,328 +4,147 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Política de Privacidade • Tikva Ahuvah</title>
-  <meta name="description" content="Política de Privacidade oficial do aplicativo Tikva Ahuvah - Transparência, Uso de Dados e Segurança Google Drive.">
   <link rel="icon" type="image/png" href="app-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #1C4835;
-      --primary-dark: #123324;
-      --primary-light: #EBF4EF;
       --gold: #C28E34;
-      --gold-dark: #A47424;
-      --gold-light: #FAF4E6;
-      --gold-border: rgba(194, 142, 52, 0.35);
-      --ruby: #9E2A3B;
       --bg: #F8F6F1;
-      --card-bg: #FFFFFF;
-      --text: #1A2420;
-      --text-muted: #56675E;
+      --card: #FFFFFF;
+      --text: #1C2621;
+      --muted: #57665F;
       --border: #E8E2D5;
-      --shadow: 0 16px 40px rgba(18, 51, 36, 0.08);
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
+      padding: 40px 16px;
     }
-    /* NAVBAR */
-    .navbar {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 14px 24px;
-    }
-    .nav-container {
-      max-width: 1080px;
+    .wrapper {
+      max-width: 680px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--primary);
-    }
-    .nav-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
-    .nav-brand-title {
-      font-family: 'Cinzel', serif;
-      font-weight: 800;
-      font-size: 18px;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .nav-link {
-      text-decoration: none;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 14px;
-      transition: color 0.2s;
-    }
-    .nav-link:hover {
-      color: var(--primary);
-    }
-    .nav-btn {
-      background: var(--primary-light);
-      color: var(--primary);
-      padding: 8px 16px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 13.5px;
-    }
-    /* MAIN ARTICLE */
-    .content-wrapper {
-      max-width: 860px;
-      margin: 50px auto 80px;
-      padding: 0 24px;
-    }
-    .paper-card {
-      background: var(--card-bg);
-      border-radius: 28px;
-      padding: 48px 42px;
+      background: var(--card);
+      border-radius: 24px;
+      padding: 42px 32px;
       border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      box-shadow: 0 10px 30px rgba(28, 72, 53, 0.05);
     }
-    @media (max-width: 600px) {
-      .paper-card {
-        padding: 32px 20px;
-      }
-    }
-    .page-tag {
+    .back-link {
       display: inline-block;
-      background: var(--primary-light);
+      text-decoration: none;
       color: var(--primary);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 14px;
+      font-weight: 600;
+      font-size: 13.5px;
+      margin-bottom: 24px;
     }
     h1 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 36px;
-      color: var(--primary-dark);
-      margin-bottom: 12px;
-      font-weight: 800;
-    }
-    .effective-date {
-      font-size: 14px;
-      color: var(--gold-dark);
-      font-weight: 600;
-      margin-bottom: 28px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
-    }
-    .highlight-box {
-      background: #F4EFE6;
-      border-left: 4px solid var(--gold);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 24px 0 32px;
-    }
-    .highlight-box p {
-      font-size: 14.5px;
-      color: #38423C;
-      margin: 0;
-      font-weight: 500;
-    }
-    h2 {
-      font-size: 21px;
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
       color: var(--primary);
-      margin: 36px 0 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    h3 {
-      font-size: 17px;
-      color: var(--text);
-      margin: 20px 0 10px;
-      font-weight: 700;
-    }
-    p {
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      font-size: 15px;
-    }
-    ul {
-      margin-left: 22px;
-      margin-bottom: 20px;
-      color: var(--text-muted);
-      font-size: 14.5px;
-    }
-    li {
       margin-bottom: 8px;
     }
-    code {
-      background: #EAE5D9;
-      padding: 2px 7px;
-      border-radius: 6px;
-      font-size: 13.5px;
-      color: var(--primary-dark);
-      font-family: monospace;
+    .meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
     }
-    .contact-box {
-      background: var(--primary-light);
-      border-radius: 18px;
-      padding: 24px;
-      margin-top: 36px;
-      border: 1px solid rgba(28, 72, 53, 0.15);
-    }
-    .contact-box h3 {
-      color: var(--primary-dark);
-      margin-top: 0;
-    }
-    /* FOOTER */
-    .footer {
-      background: #F0ECE4;
-      border-top: 1px solid var(--border);
-      padding: 40px 24px;
-      text-align: center;
-      font-size: 13.5px;
-      color: var(--text-muted);
-    }
-    .footer a {
+    h2 {
+      font-size: 18px;
       color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
+      margin: 28px 0 10px;
+    }
+    p {
+      font-size: 14.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    li { margin-bottom: 6px; }
+    code {
+      background: #F1ECE1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--primary);
+    }
+    .callout {
+      background: #F3EFE6;
+      border-left: 3px solid var(--gold);
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 20px 0;
+      font-size: 14px;
+      color: #3B4741;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 36px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12.5px;
+      color: #9AA69F;
     }
   </style>
 </head>
 <body>
+  <div class="wrapper">
+    <a href="index.html" class="back-link">&larr; Voltar à página inicial</a>
+    <h1>Política de Privacidade</h1>
+    <div class="meta">Última atualização: 20 de Novembro de 2026</div>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="nav-brand">
-        <img src="app-icon.png" alt="Tikva Ahuvah" class="nav-logo">
-        <span class="nav-brand-title">Tikva Ahuvah</span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html" class="nav-link">← Voltar ao Início</a>
-        <a href="termos.html" class="nav-link">Termos de Uso</a>
-      </div>
+    <div class="callout">
+      <strong>Privacidade e Proteção:</strong> O <strong>Tikva Ahuvah</strong> é um aplicativo estritamente pessoal. Não coletamos, não rastreamos e não compartilhamos nenhum dado do usuário com terceiros ou anunciantes.
     </div>
-  </nav>
 
-  <!-- CONTENT -->
-  <main class="content-wrapper">
-    <article class="paper-card">
-      <span class="page-tag">TRANSPARÊNCIA & SEGURANÇA</span>
-      <h1>Política de Privacidade</h1>
-      <div class="effective-date">Última atualização: 20 de Novembro de 2026</div>
+    <h2>1. Armazenamento Local</h2>
+    <p>
+      Todos os registros criados no aplicativo (anotações devocionais, memórias e fotos) são armazenados localmente no banco de dados SQLite do próprio dispositivo do usuário.
+    </p>
 
-      <div class="highlight-box">
-        <p>
-          🌿 <strong>Compromisso de Fé e Respeito:</strong> O aplicativo <strong>Tikva Ahuvah</strong> é uma obra pessoal, devocional e afetiva. Nós levamos a sua privacidade com máxima seriedade: seus dados pertencem estritamente a você, não são rastreados, não são vendidos e não são transferidos para terceiros.
-        </p>
-      </div>
+    <h2>2. Uso da API do Google Drive</h2>
+    <p>
+      O aplicativo permite ao usuário vincular opcionalmente sua conta pessoal do Google Drive para fins exclusivos de backup e restauração.
+    </p>
+    <p>Para isso, solicita unicamente os seguintes escopos de acesso:</p>
+    <ul>
+      <li><code>drive.appdata</code>: permite salvar a cópia de backup na pasta protegida e oculta de dados do app;</li>
+      <li><code>drive.file</code>: permite criar e gerenciar apenas os arquivos de backup gerados pelo próprio aplicativo.</li>
+    </ul>
+    <p>
+      O aplicativo <strong>não tem acesso</strong> a nenhum outro documento, pasta ou arquivo preexistente no Google Drive do usuário.
+    </p>
 
-      <h2>1. Introdução e Propósito</h2>
-      <p>
-        Esta Política de Privacidade descreve como o aplicativo móvel <strong>Tikva Ahuvah</strong> trata as informações inseridas pelo usuário. O aplicativo funciona primariamente offline, armazenando anotações de mensagens bíblicas, fotos, versos poéticos e cartas comemorativas diretamente na memória segura do dispositivo.
-      </p>
+    <h2>3. Compartilhamento de Dados</h2>
+    <p>
+      Nenhum dado é vendido, transferido ou compartilhado com terceiros. O uso dos dados das APIs do Google cumpre estritamente a Política de Dados do Usuário dos Serviços de API do Google, incluindo os requisitos de Uso Limitado.
+    </p>
 
-      <h2>2. Coleta e Armazenamento Local de Dados</h2>
-      <p>
-        Todas as informações criadas dentro do aplicativo são salvas localmente no aparelho utilizando banco de dados SQLite criptograficamente isolado pelo sistema operacional Android. Isso inclui:
-      </p>
-      <ul>
-        <li><strong>Meu Caderno de Fé:</strong> Títulos, resumos e pregações bíblicas;</li>
-        <li><strong>Baú de Memórias:</strong> Datas especiais, descrições e fotografias selecionadas da galeria;</li>
-        <li><strong>Poemas & Reflexões:</strong> Textos e versos poéticos autorais;</li>
-        <li><strong>Cartas "Abra Quando...":</strong> Mensagens lacradas para momentos específicos;</li>
-        <li><strong>Código PIN / Biometria:</strong> Armazenado exclusivamente nos recursos de segurança do próprio aparelho para bloqueio de tela.</li>
-      </ul>
+    <h2>4. Gerenciamento e Exclusão</h2>
+    <p>
+      O usuário pode revogar o acesso do Google Drive a qualquer momento nas configurações do aplicativo ou pela página de permissões da Conta Google (<a href="https://myaccount.google.com/permissions" target="_blank">myaccount.google.com/permissions</a>).
+    </p>
 
-      <h2>3. Integração com o Google Drive e Uso de Escopos OAuth</h2>
-      <p>
-        O <strong>Tikva Ahuvah</strong> oferece a opção de sincronização e backup em nuvem através da API oficial do Google Drive. Ao optar por conectar sua conta Google, o aplicativo solicita estritamente os seguintes escopos de acesso:
-      </p>
-      <ul>
-        <li>
-          <code>https://www.googleapis.com/auth/drive.appdata</code><br>
-          Permite ao aplicativo salvar o arquivo de backup compactado na pasta oculta e protegida de dados do aplicativo (AppData) no Google Drive do próprio usuário, garantindo que o arquivo não seja apagado por engano.
-        </li>
-        <li>
-          <code>https://www.googleapis.com/auth/drive.file</code><br>
-          Permite ao aplicativo criar, ler e atualizar exclusivamente os arquivos de backup gerados pelo próprio Tikva Ahuvah.
-        </li>
-      </ul>
+    <h2>5. Contato</h2>
+    <p>
+      Para esclarecimentos sobre esta política, o usuário pode contatar o suporte através das configurações do aplicativo.
+    </p>
 
-      <div class="highlight-box" style="border-left-color: var(--primary);">
-        <p>
-          🔒 <strong>Isolamento Total:</strong> O aplicativo <strong>NÃO TEM ACESSO</strong> a nenhum outro documento, pasta, foto ou arquivo preexistente no seu Google Drive pessoal. Ele acessa unicamente os arquivos gerados por ele mesmo.
-        </p>
-      </div>
-
-      <h2>4. Compartilhamento e Venda de Dados</h2>
-      <p>
-        Nós <strong>NUNCA</strong> vendemos, alugamos, comercializamos ou compartilhamos dados pessoais com qualquer empresa de publicidade, corretores de dados ou redes de telemetria. Não há ferramentas de rastreamento de anúncios (anúncios invasivos ou trackers analíticos de terceiros) embutidas no código.
-      </p>
-
-      <h2>5. Conformidade com a Política de Dados do Usuário do Google</h2>
-      <p>
-        O uso e a transferência para qualquer outro aplicativo de informações recebidas das APIs do Google pelo <strong>Tikva Ahuvah</strong> cumprirão a 
-        <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" style="color: var(--primary); font-weight: 700;">Política de Dados do Usuário dos Serviços da API do Google</a>, incluindo os requisitos de <em>Uso Limitado</em>.
-      </p>
-
-      <h2>6. Controle, Exclusão e Revogação de Acesso</h2>
-      <p>
-        O usuário tem total soberania sobre suas informações a qualquer momento:
-      </p>
-      <ul>
-        <li><strong>Desconectar Conta Google:</strong> Pode ser feito a qualquer momento em <em>Configurações > Backup & Sincronização > Desconectar Conta</em>.</li>
-        <li><strong>Revogação pelo Google:</strong> O usuário pode revogar o acesso do app diretamente na página de segurança da sua Conta do Google (<a href="https://myaccount.google.com/permissions" target="_blank" style="color: var(--primary);">myaccount.google.com/permissions</a>).</li>
-        <li><strong>Exclusão Completa:</strong> Ao desinstalar o aplicativo ou limpar os dados locais nas configurações do celular, todos os dados armazenados no aparelho são permanentemente apagados.</li>
-      </ul>
-
-      <h2>7. Contato do Desenvolvedor</h2>
-      <p>
-        Se você tiver qualquer dúvida, sugestão ou solicitação referente a esta política de privacidade ou ao tratamento de dados do aplicativo, entre em contato diretamente com o desenvolvedor:
-      </p>
-
-      <div class="contact-box">
-        <h3>Responsável pelo Aplicativo</h3>
-        <p style="margin-bottom: 6px;"><strong>Desenvolvedor:</strong> André Tuti</p>
-        <p style="margin-bottom: 6px;"><strong>E-mail de Suporte:</strong> <a href="mailto:ttuti@gozo.net" style="color: var(--primary); font-weight: 700;">ttuti@gozo.net</a></p>
-        <p style="margin-bottom: 0;"><strong>Projeto:</strong> Tikva Ahuvah (Minha Esperança Amada)</p>
-      </div>
-    </article>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>Tikva Ahuvah • Desenvolvido com amor, oração e zelo por André Tuti</p>
-    <p style="margin-top: 8px;"><a href="index.html">Início</a> • <a href="termos.html">Termos de Uso</a></p>
-  </footer>
-
+    <div class="footer">
+      Tikva Ahuvah &copy; 2026 • Todos os direitos reservados
+    </div>
+  </div>
 </body>
 </html>
