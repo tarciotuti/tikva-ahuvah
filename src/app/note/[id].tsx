@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -13,10 +12,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { Note } from '../../types';
 import { getNoteById, toggleFavoriteNote, deleteNote } from '../../services/database';
+import { useAlert } from '../../context/AlertContext';
 
 export default function NoteDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [note, setNote] = useState<Note | null>(() => (id ? getNoteById(id) : null));
+  const { showAlert } = useAlert();
 
   if (!note) {
     return (
@@ -37,10 +38,11 @@ export default function NoteDetailScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      'Apagar Anotação',
-      'Deseja remover esta anotação do seu caderno?',
-      [
+    showAlert({
+      title: 'Apagar Anotação',
+      message: 'Deseja remover esta anotação do seu caderno?',
+      icon: 'trash',
+      buttons: [
         { text: 'Cancelar', style: 'cancel' },
         {
           text: 'Apagar',
@@ -50,8 +52,8 @@ export default function NoteDetailScreen() {
             router.back();
           },
         },
-      ]
-    );
+      ],
+    });
   };
 
   const getTypeLabel = () => {

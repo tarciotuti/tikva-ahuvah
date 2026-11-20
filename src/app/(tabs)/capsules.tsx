@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { Capsule } from '../../types';
 import { getCapsules } from '../../services/database';
 import { CapsuleCard } from '../../components/CapsuleCard';
+import { AppHeader } from '../../components/AppHeader';
 
 export default function CapsulesScreen() {
   const [capsules, setCapsules] = useState<Capsule[]>([]);
@@ -69,7 +69,11 @@ export default function CapsulesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <View style={styles.safeArea}>
+      <AppHeader
+        subtitle="Cartas do Coração 💌"
+        icon="mail-unread"
+      />
       <FlatList
         data={capsules}
         keyExtractor={(item) => item.id}
@@ -90,7 +94,7 @@ export default function CapsulesScreen() {
           />
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

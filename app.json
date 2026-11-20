@@ -28,7 +28,10 @@
       "expo-sqlite",
       "expo-sharing",
       "expo-font",
-      "expo-local-authentication"
+      "expo-local-authentication",
+      "expo-audio",
+      "expo-asset",
+      "@react-native-google-signin/google-signin"
     ]
   }
 }

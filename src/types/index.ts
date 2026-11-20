@@ -46,6 +46,58 @@ export interface Note {
   createdAt: number;
 }
 
+export interface GalleryPhoto {
+  id: string;
+  uri: string;
+  caption?: string;
+  date: string;        // YYYY-MM-DD
+  createdAt: number;
+}
+
+export interface Poem {
+  id: string;
+  title: string;
+  date: string;        // YYYY-MM-DD
+  content: string;
+  authorNote?: string;
+  tags?: string[];
+  isOriginal: boolean;
+  createdAt: number;
+}
+
+export interface TimelineMilestone {
+  id: string;
+  year: string;
+  date: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: string;
+  category: 'espiritual' | 'afeto' | 'superacao' | 'conquista';
+}
+
+export interface ChatMessageItem {
+  sender: 'Ele' | 'Ela' | string;
+  time: string;
+  text: string;
+}
+
+export interface ConversationSnippet {
+  id: string;
+  number: number;
+  title: string;
+  date: string;
+  context: string;
+  messages: ChatMessageItem[];
+  leaderNote?: string;
+  tags?: string[];
+}
+
+export interface BackupPhotoFile {
+  filename: string;
+  base64Data: string;
+}
+
 export interface BackupPayload {
   version: number;
   exportedAt: string;
@@ -53,4 +105,7 @@ export interface BackupPayload {
   memories: Memory[];
   capsules: Capsule[];
   notes: Note[];
+  gallery?: GalleryPhoto[];
+  poems?: Poem[];
+  photosFiles?: BackupPhotoFile[];
 }

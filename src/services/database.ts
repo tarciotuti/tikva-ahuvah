@@ -1,6 +1,7 @@
 import * as SQLite from 'expo-sqlite';
-import { Memory, Capsule, Note } from '../types';
+import { Memory, Capsule, Note, GalleryPhoto, Poem } from '../types';
 import { INITIAL_MEMORIES, INITIAL_CAPSULES, INITIAL_NOTES } from '../data/initialData';
+import { INITIAL_POEMS } from '../data/initialPoems';
 
 let dbInstance: SQLite.SQLiteDatabase | null = null;
 
@@ -52,6 +53,30 @@ export function initDatabase() {
       is_favorite INTEGER NOT NULL DEFAULT 0,
       date TEXT NOT NULL,
       created_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS gallery_photos (
+      id TEXT PRIMARY KEY NOT NULL,
+      uri TEXT NOT NULL,
+      caption TEXT,
+      date TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS poems (
+      id TEXT PRIMARY KEY NOT NULL,
+      title TEXT NOT NULL,
+      date TEXT NOT NULL,
+      content TEXT NOT NULL,
+      author_note TEXT,
+      tags TEXT,
+      is_original INTEGER NOT NULL DEFAULT 1,
+      created_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY NOT NULL,
+      value TEXT NOT NULL
     );
   `);
 
@@ -118,6 +143,27 @@ export function initDatabase() {
           note.isFavorite ? 1 : 0,
           note.date,
           note.createdAt,
+        ]
+      );
+    }
+  }
+
+  // Popular poemas se vazios
+  const poemsCountRow = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM poems');
+  if (poemsCountRow && poemsCountRow.count === 0) {
+    for (const poem of INITIAL_POEMS) {
+      db.runSync(
+        `INSERT INTO poems (id, title, date, content, author_note, tags, is_original, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          poem.id,
+          poem.title,
+          poem.date,
+          poem.content,
+          poem.authorNote || null,
+          poem.tags ? JSON.stringify(poem.tags) : null,
+          poem.isOriginal ? 1 : 0,
+          poem.createdAt,
         ]
       );
     }
@@ -397,17 +443,172 @@ export function deleteNote(id: string): void {
   db.runSync('DELETE FROM notes WHERE id = ?', [id]);
 }
 
+// ---------------- GALERIA DE FOTOS ---------------- //
+
+export function getGalleryPhotos(): GalleryPhoto[] {
+  const db = getDatabase();
+  const rows = db.getAllSync<any>(
+    'SELECT * FROM gallery_photos ORDER BY date DESC, created_at DESC'
+  );
+  return rows.map((row) => ({
+    id: row.id,
+    uri: row.uri,
+    caption: row.caption || '',
+    date: row.date,
+    createdAt: row.created_at,
+  }));
+}
+
+export function saveGalleryPhoto(photo: {
+  id?: string;
+  uri: string;
+  caption?: string;
+  date?: string;
+  createdAt?: number;
+}): GalleryPhoto {
+  const db = getDatabase();
+  const id = photo.id || `gal_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  const date = photo.date || new Date().toISOString().slice(0, 10);
+  const createdAt = photo.createdAt || Date.now();
+  const caption = photo.caption || '';
+
+  db.runSync(
+    `INSERT INTO gallery_photos (id, uri, caption, date, created_at)
+     VALUES (?, ?, ?, ?, ?)`,
+    [id, photo.uri, caption, date, createdAt]
+  );
+
+  return {
+    id,
+    uri: photo.uri,
+    caption,
+    date,
+    createdAt,
+  };
+}
+
+export function updateGalleryPhotoCaption(id: string, caption: string): void {
+  const db = getDatabase();
+  db.runSync('UPDATE gallery_photos SET caption = ? WHERE id = ?', [caption, id]);
+}
+
+export function deleteGalleryPhoto(id: string): void {
+  const db = getDatabase();
+  db.runSync('DELETE FROM gallery_photos WHERE id = ?', [id]);
+}
+
+// ---------------- POEMAS & REFLEXÕES ---------------- //
+
+interface PoemRow {
+  id: string;
+  title: string;
+  date: string;
+  content: string;
+  author_note: string | null;
+  tags: string | null;
+  is_original: number;
+  created_at: number;
+}
+
+function mapPoemRow(row: PoemRow): Poem {
+  return {
+    id: row.id,
+    title: row.title,
+    date: row.date,
+    content: row.content,
+    authorNote: row.author_note || undefined,
+    tags: row.tags ? JSON.parse(row.tags) : undefined,
+    isOriginal: row.is_original === 1,
+    createdAt: row.created_at,
+  };
+}
+
+export function getPoems(search?: string): Poem[] {
+  const db = getDatabase();
+  let query = 'SELECT * FROM poems WHERE 1=1';
+  const params: string[] = [];
+
+  if (search) {
+    query += ' AND (title LIKE ? OR content LIKE ?)';
+    params.push(`%${search}%`, `%${search}%`);
+  }
+
+  query += ' ORDER BY created_at DESC';
+  const rows = db.getAllSync<PoemRow>(query, params);
+  return rows.map(mapPoemRow);
+}
+
+export function getPoemById(id: string): Poem | null {
+  const db = getDatabase();
+  const row = db.getFirstSync<PoemRow>('SELECT * FROM poems WHERE id = ?', [id]);
+  return row ? mapPoemRow(row) : null;
+}
+
+export function insertPoem(poem: Poem): void {
+  const db = getDatabase();
+  db.runSync(
+    `INSERT INTO poems (id, title, date, content, author_note, tags, is_original, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      poem.id,
+      poem.title,
+      poem.date,
+      poem.content,
+      poem.authorNote || null,
+      poem.tags ? JSON.stringify(poem.tags) : null,
+      poem.isOriginal ? 1 : 0,
+      poem.createdAt || Date.now(),
+    ]
+  );
+}
+
+export function updatePoem(poem: Poem): void {
+  const db = getDatabase();
+  db.runSync(
+    `UPDATE poems SET title = ?, date = ?, content = ?, author_note = ?, tags = ?, is_original = ?
+     WHERE id = ?`,
+    [
+      poem.title,
+      poem.date,
+      poem.content,
+      poem.authorNote || null,
+      poem.tags ? JSON.stringify(poem.tags) : null,
+      poem.isOriginal ? 1 : 0,
+      poem.id,
+    ]
+  );
+}
+
+export function deletePoem(id: string): void {
+  const db = getDatabase();
+  db.runSync('DELETE FROM poems WHERE id = ?', [id]);
+}
+
 // ---------------- BACKUP & RESTAURAÇÃO ---------------- //
 
-export function getAllDataForBackup(): { memories: Memory[]; capsules: Capsule[]; notes: Note[] } {
+export function getAllDataForBackup(): {
+  memories: Memory[];
+  capsules: Capsule[];
+  notes: Note[];
+  gallery: GalleryPhoto[];
+  poems: Poem[];
+} {
   return {
     memories: getMemories('Todas'),
     capsules: getCapsules(),
     notes: getNotes('todas'),
+    gallery: getGalleryPhotos(),
+    poems: getPoems(),
   };
 }
 
-export function restoreDataFromBackup(memories: Memory[], capsules: Capsule[], notes: Note[] = []): void {
+export function restoreDataFromBackup(
+  memories: Memory[],
+  capsules: Capsule[],
+  notes: Note[] = [],
+  gallery: GalleryPhoto[] = [],
+  poems: Poem[] = []
+): void {
   const db = getDatabase();
 
   db.execSync('BEGIN TRANSACTION;');
@@ -415,6 +616,8 @@ export function restoreDataFromBackup(memories: Memory[], capsules: Capsule[], n
     db.runSync('DELETE FROM memories;');
     db.runSync('DELETE FROM capsules;');
     db.runSync('DELETE FROM notes;');
+    db.runSync('DELETE FROM gallery_photos;');
+    db.runSync('DELETE FROM poems;');
 
     for (const mem of memories) {
       db.runSync(
@@ -468,6 +671,37 @@ export function restoreDataFromBackup(memories: Memory[], capsules: Capsule[], n
           note.isFavorite ? 1 : 0,
           note.date,
           note.createdAt || Date.now(),
+        ]
+      );
+    }
+
+    for (const item of gallery) {
+      db.runSync(
+        `INSERT INTO gallery_photos (id, uri, caption, date, created_at)
+         VALUES (?, ?, ?, ?, ?)`,
+        [
+          item.id,
+          item.uri,
+          item.caption || null,
+          item.date,
+          item.createdAt || Date.now(),
+        ]
+      );
+    }
+
+    for (const p of poems) {
+      db.runSync(
+        `INSERT INTO poems (id, title, date, content, author_note, tags, is_original, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          p.id,
+          p.title,
+          p.date,
+          p.content,
+          p.authorNote || null,
+          p.tags ? JSON.stringify(p.tags) : null,
+          p.isOriginal ? 1 : 0,
+          p.createdAt || Date.now(),
         ]
       );
     }

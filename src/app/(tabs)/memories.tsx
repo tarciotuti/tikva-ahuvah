@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
   TextInput,
@@ -9,7 +8,6 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, CATEGORIES } from '../../constants/theme';
@@ -18,6 +16,7 @@ import { getMemories, toggleFavoriteMemory } from '../../services/database';
 import { MemoryCard } from '../../components/MemoryCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { EmptyState } from '../../components/EmptyState';
+import { AppHeader } from '../../components/AppHeader';
 
 export default function MemoriesScreen() {
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -53,20 +52,6 @@ export default function MemoriesScreen() {
 
   const renderHeader = () => (
     <View style={styles.header}>
-      <View style={styles.titleRow}>
-        <View>
-          <Text style={styles.subtitle}>HISTÓRIAS & RECORDAÇÕES</Text>
-          <Text style={styles.title}>Baú de Memórias ✨</Text>
-        </View>
-        <TouchableOpacity
-          style={styles.addButton}
-          activeOpacity={0.8}
-          onPress={() => router.push('/new-memory')}
-        >
-          <Ionicons name="add" size={24} color={COLORS.white} />
-        </TouchableOpacity>
-      </View>
-
       {/* Barra de Pesquisa */}
       <View style={styles.searchBar}>
         <Ionicons name="search-outline" size={18} color={COLORS.textMuted} style={styles.searchIcon} />
@@ -105,7 +90,15 @@ export default function MemoriesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <View style={styles.safeArea}>
+      <AppHeader
+        subtitle="Baú de Memórias ✨"
+        icon="images"
+        rightAction={{
+          icon: 'add',
+          onPress: () => router.push('/new-memory'),
+        }}
+      />
       <FlatList
         data={memories}
         keyExtractor={(item) => item.id}
@@ -134,7 +127,7 @@ export default function MemoriesScreen() {
           />
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

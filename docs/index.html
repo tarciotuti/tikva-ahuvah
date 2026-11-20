@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tikva Ahuvah • Minha Esperança Amada</title>
+  <meta name="description" content="Tikva Ahuvah - Santuário Digital de Fé, Memórias, Oração e Afeto">
+  <link rel="icon" type="image/png" href="app-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1C4835;
+      --primary-dark: #123324;
+      --primary-light: #EBF4EF;
+      --gold: #C28E34;
+      --gold-dark: #A47424;
+      --gold-light: #FAF4E6;
+      --gold-border: rgba(194, 142, 52, 0.35);
+      --ruby: #9E2A3B;
+      --ruby-light: #FAF0F2;
+      --bg: #F8F6F1;
+      --card-bg: #FFFFFF;
+      --text: #1A2420;
+      --text-muted: #56675E;
+      --border: #E8E2D5;
+      --shadow: 0 16px 40px rgba(18, 51, 36, 0.08);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* NAVBAR */
+    .navbar {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 24px;
+    }
+    .nav-container {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--primary);
+    }
+    .nav-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 10px rgba(194, 142, 52, 0.2);
+    }
+    .nav-brand-title {
+      font-family: 'Cinzel', serif;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .nav-link:hover {
+      color: var(--primary);
+    }
+    .nav-btn {
+      background: var(--primary);
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13.5px;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .nav-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    /* HERO */
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+      color: var(--gold-dark);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 48px;
+      line-height: 1.15;
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .hero-icon-wrap {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 28px;
+      border-radius: 28px;
+      padding: 5px;
+      background: linear-gradient(135deg, #C28E34, #FAF4E6, #C28E34);
+      box-shadow: 0 16px 36px rgba(194, 142, 52, 0.25);
+    }
+    .hero-icon-wrap img {
+      width: 100%;
+      height: 100%;
+      border-radius: 23px;
+      object-fit: cover;
+    }
+    /* QUEM FEZ E PRA QUEM */
+    .authorship-section {
+      max-width: 960px;
+      margin: 20px auto 70px;
+      padding: 0 24px;
+    }
+    .section-title-wrap {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .section-tag {
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      color: var(--primary);
+      margin-top: 4px;
+      font-weight: 700;
+    }
+    .authorship-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 768px) {
+      .authorship-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-title {
+        font-size: 34px;
+      }
+    }
+    .author-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 32px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .author-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+    .author-card.leader::before {
+      background: linear-gradient(90deg, var(--gold), #FAF4E6);
+    }
+    .author-card.amada::before {
+      background: linear-gradient(90deg, var(--ruby), var(--ruby-light));
+    }
+    .author-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .author-card.leader .author-icon {
+      background: var(--gold-light);
+      border: 1px solid var(--gold-border);
+    }
+    .author-card.amada .author-icon {
+      background: var(--ruby-light);
+      border: 1px solid rgba(158, 42, 59, 0.2);
+    }
+    .author-role {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .author-card.leader .author-role {
+      color: var(--gold-dark);
+    }
+    .author-card.amada .author-role {
+      color: var(--ruby);
+    }
+    .author-name {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      color: var(--text);
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .author-tagline {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+    .author-card.leader .author-tagline {
+      background: var(--gold-light);
+      color: var(--gold-dark);
+    }
+    .author-card.amada .author-tagline {
+      background: var(--ruby-light);
+      color: var(--ruby);
+    }
+    .author-desc {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    /* FEATURES */
+    .features-section {
+      max-width: 1040px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 26px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+    .feature-icon-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .feature-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    /* BANNER PRIVACIDADE & NUVEM */
+    .cloud-banner {
+      background: linear-gradient(135deg, #1C4835 0%, #123324 100%);
+      border-radius: 28px;
+      padding: 48px 36px;
+      color: #fff;
+      max-width: 960px;
+      margin: 0 auto 90px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      box-shadow: 0 20px 45px rgba(28, 72, 53, 0.25);
+    }
+    @media (max-width: 768px) {
+      .cloud-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 36px 24px;
+      }
+    }
+    .cloud-icon-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      flex-shrink: 0;
+    }
+    .cloud-text h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .cloud-text p {
+      font-size: 15px;
+      color: #D3E4DB;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .cloud-btn {
+      display: inline-block;
+      background: #FFFFFF;
+      color: var(--primary);
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .cloud-btn:hover {
+      background: #FAF4E6;
+      color: var(--gold-dark);
+    }
+    /* FOOTER */
+    .footer {
+      background: #F0ECE4;
+      border-top: 1px solid var(--border);
+      padding: 50px 24px 30px;
+      text-align: center;
+    }
+    .footer-verse-box {
+      max-width: 680px;
+      margin: 0 auto 28px;
+      padding: 20px;
+      background: #FAF8F4;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+    }
+    .footer-verse {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .footer-ref {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .footer-copy {
+      font-size: 12.5px;
+      color: #8C9992;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <img src="app-icon.png" alt="Tikva Ahuvah" class="nav-logo">
+        <span class="nav-brand-title">Tikva Ahuvah</span>
+      </a>
+      <div class="nav-links">
+        <a href="#proposito" class="nav-link">Quem Fez & Pra Quem</a>
+        <a href="#recursos" class="nav-link">Recursos</a>
+        <a href="privacidade.html" class="nav-link">Política de Privacidade</a>
+        <a href="termos.html" class="nav-link">Termos de Uso</a>
+        <a href="privacidade.html" class="nav-btn">Segurança & Nuvem</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-icon-wrap">
+      <img src="app-icon.png" alt="Tikva Ahuvah Ícone">
+    </div>
+    <div class="hero-badge">🌿 Santuário Digital de Fé & Afeto</div>
+    <h1 class="hero-title">Tikva Ahuvah<br><em>Minha Esperança Amada</em></h1>
+    <p class="hero-subtitle">
+      Um porto seguro desenhado para guardar as memórias mais preciosas, versos da alma, orações diárias e o crescimento espiritual de uma aliança edificada em Deus.
+    </p>
+  </header>
+
+  <!-- QUEM FEZ E PRA QUEM -->
+  <section class="authorship-section" id="proposito">
+    <div class="section-title-wrap">
+      <span class="section-tag">HISTÓRIA & IDENTIDADE</span>
+      <h2 class="section-title">Quem Fez e Pra Quem</h2>
+    </div>
+
+    <div class="authorship-grid">
+      <!-- QUEM FEZ -->
+      <div class="author-card leader">
+        <div class="author-icon">🛡️</div>
+        <div class="author-role">QUEM FEZ</div>
+        <h3 class="author-name">André Tuti</h3>
+        <div class="author-tagline">Seu Líder & Companheiro de Fé</div>
+        <p class="author-desc">
+          Desenvolvido com todo amor, dedicação, orações diárias e zelo espiritual. Criado como uma expressão viva de gratidão a Deus, companheirismo e cuidado pastoral constante pela vida da sua amada.
+        </p>
+      </div>
+
+      <!-- PRA QUEM -->
+      <div class="author-card amada">
+        <div class="author-icon">🌹</div>
+        <div class="author-role">PRA QUEM</div>
+        <h3 class="author-name">Tikva Ahuvah</h3>
+        <div class="author-tagline">Minha Esperança & Amada</div>
+        <p class="author-desc">
+          Criado exclusivamente para ela: para que nunca se esqueça da mulher valorosa e preciosa que é, da sua força nos dias difíceis, do seu lindo ministério e do propósito eterno que o Senhor preparou para a sua vida.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECURSOS DO APLICATIVO -->
+  <section class="features-section" id="recursos">
+    <div class="section-title-wrap">
+      <span class="section-tag">FUNCIONALIDADES</span>
+      <h2 class="section-title">O Que Há Dentro do Refúgio</h2>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-circle">📖</div>
+        <h3 class="feature-title">Meu Caderno de Fé</h3>
+        <p class="feature-desc">Registro organizado de sermões, pregações dominicais, estudos e devocionais da palavra de Deus.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-circle">🏺</div>
+        <h3 class="feature-title">Baú de Memórias</h3>
+        <p class="feature-desc">Datas inesquecíveis, fotos especiais, marcos e pequenas alegrias categorizadas com muito carinho.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-circle">✉️</div>
+        <h3 class="feature-title">Cartas "Abra Quando..."</h3>
+        <p class="feature-desc">Cápsulas de afeto e consolo lacradas para serem abertas exatamente nos dias em que o coração mais precisar.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-circle">🌿</div>
+        <h3 class="feature-title">Poemas & Reflexões</h3>
+        <p class="feature-desc">O espaço da alma para versos autorais, salmos poéticos e orações nascidas nas madrugadas de clamor.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-circle">⏳</div>
+        <h3 class="feature-title">Linha do Tempo (2021–2026)</h3>
+        <p class="feature-desc">100 trechos reais e autênticos que contam o início da oração, as risadas, os desafios e o crescimento do amor.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-circle">🎵</div>
+        <h3 class="feature-title">Galeria & Slideshow Musical</h3>
+        <p class="feature-desc">Exibição suave de fotos com transição Ken Burns e trilhas sonoras instrumentais de piano e adoração.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNER GOOGLE DRIVE / NUVEM -->
+  <div class="cloud-banner">
+    <div class="cloud-icon-circle">☁️</div>
+    <div class="cloud-text">
+      <h3>Segurança & Sincronização Google Drive</h3>
+      <p>
+        O aplicativo possui sistema de backup inteligente: suas memórias e orações são guardadas com segurança na memória interna do celular e, opcionalmente, sincronizadas na sua própria conta do Google Drive com proteção total.
+      </p>
+      <a href="privacidade.html" class="cloud-btn">Ler Política de Privacidade & Segurança →</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-verse-box">
+      <p class="footer-verse">"Agora, pois, permanecem a fé, a esperança e o amor, estes três; mas o maior destes é o amor."</p>
+      <span class="footer-ref">1 Coríntios 13:13</span>
+    </div>
+
+    <div class="footer-links">
+      <a href="index.html">Início</a>
+      <a href="#proposito">Quem Fez & Pra Quem</a>
+      <a href="privacidade.html">Política de Privacidade</a>
+      <a href="termos.html">Termos de Uso</a>
+    </div>
+
+    <p class="footer-copy">
+      Tikva Ahuvah • Aplicativo devocional e afetivo pessoal • Desenvolvido por André Tuti
+    </p>
+  </footer>
+
+</body>
+</html>

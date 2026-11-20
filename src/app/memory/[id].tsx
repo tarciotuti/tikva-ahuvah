@@ -6,7 +6,6 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -14,10 +13,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { Memory } from '../../types';
 import { getMemoryById, toggleFavoriteMemory, deleteMemory } from '../../services/database';
+import { useAlert } from '../../context/AlertContext';
 
 export default function MemoryDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [memory, setMemory] = useState<Memory | null>(() => (id ? getMemoryById(id) : null));
+  const { showAlert } = useAlert();
 
   if (!memory) {
     return (
@@ -38,10 +39,11 @@ export default function MemoryDetailScreen() {
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      'Remover Memória',
-      'Tem certeza de que deseja apagar esta memória do seu baú?',
-      [
+    showAlert({
+      title: 'Remover Memória',
+      message: 'Tem certeza de que deseja apagar esta memória do seu baú?',
+      icon: 'trash',
+      buttons: [
         { text: 'Cancelar', style: 'cancel' },
         {
           text: 'Apagar',
@@ -51,8 +53,8 @@ export default function MemoryDetailScreen() {
             router.back();
           },
         },
-      ]
-    );
+      ],
+    });
   };
 
   return (

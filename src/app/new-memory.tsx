@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -18,8 +17,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, CATEGORIES } from '../constants/theme';
 import { saveMemory } from '../services/database';
 import { saveImageToAppDirectory } from '../services/backup';
+import { useAlert } from '../context/AlertContext';
 
 export default function NewMemoryScreen() {
+  const { showAlert } = useAlert();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -35,10 +36,11 @@ export default function NewMemoryScreen() {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        Alert.alert(
-          'Permissão Necessária',
-          'Precisamos de acesso às suas fotos para você escolher uma imagem para a sua memória.'
-        );
+        showAlert({
+          title: 'Permissão Necessária',
+          message: 'Precisamos de acesso às suas fotos para você escolher uma imagem para a sua memória.',
+          icon: 'warning',
+        });
         return;
       }
 
@@ -54,7 +56,11 @@ export default function NewMemoryScreen() {
       }
     } catch (error) {
       console.error('Erro ao escolher imagem:', error);
-      Alert.alert('Erro', 'Não foi possível carregar a foto selecionada.');
+      showAlert({
+        title: 'Erro',
+        message: 'Não foi possível carregar a foto selecionada.',
+        icon: 'error',
+      });
     }
   };
 
@@ -62,10 +68,11 @@ export default function NewMemoryScreen() {
     try {
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
       if (!permissionResult.granted) {
-        Alert.alert(
-          'Permissão Necessária',
-          'Precisamos de acesso à câmera para registrar este momento.'
-        );
+        showAlert({
+          title: 'Permissão Necessária',
+          message: 'Precisamos de acesso à câmera para registrar este momento.',
+          icon: 'warning',
+        });
         return;
       }
 
@@ -80,18 +87,30 @@ export default function NewMemoryScreen() {
       }
     } catch (error) {
       console.error('Erro ao tirar foto:', error);
-      Alert.alert('Erro', 'Não foi possível acionar a câmera.');
+      showAlert({
+        title: 'Erro',
+        message: 'Não foi possível acionar a câmera.',
+        icon: 'error',
+      });
     }
   };
 
   const handleSave = async () => {
     if (!title.trim()) {
-      Alert.alert('Título obrigatório', 'Dê um nome especial para essa memória.');
+      showAlert({
+        title: 'Título obrigatório',
+        message: 'Dê um nome especial para essa memória.',
+        icon: 'warning',
+      });
       return;
     }
 
     if (!description.trim()) {
-      Alert.alert('História obrigatória', 'Conte um pouquinho sobre como foi esse momento.');
+      showAlert({
+        title: 'História obrigatória',
+        message: 'Conte um pouquinho sobre como foi esse momento.',
+        icon: 'warning',
+      });
       return;
     }
 
@@ -113,15 +132,25 @@ export default function NewMemoryScreen() {
         isFavorite,
       });
 
-      Alert.alert('Memória Guardada! ✨', 'Este momento foi adicionado ao seu baú com sucesso.', [
-        {
-          text: 'Concluir',
-          onPress: () => router.back(),
-        },
-      ]);
+      showAlert({
+        title: 'Memória Guardada! ✨',
+        message: 'Este momento foi adicionado ao seu baú com sucesso.',
+        icon: 'success',
+        buttons: [
+          {
+            text: 'Concluir',
+            style: 'default',
+            onPress: () => router.back(),
+          },
+        ],
+      });
     } catch (error) {
       console.error('Erro ao salvar memória:', error);
-      Alert.alert('Erro', 'Ocorreu um erro ao salvar a memória. Tente novamente.');
+      showAlert({
+        title: 'Erro',
+        message: 'Ocorreu um erro ao salvar a memória. Tente novamente.',
+        icon: 'error',
+      });
     } finally {
       setIsSaving(false);
     }

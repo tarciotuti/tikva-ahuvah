@@ -6,7 +6,6 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -16,8 +15,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, NOTE_TYPES } from '../constants/theme';
 import { saveNote } from '../services/database';
 import { NoteType } from '../types';
+import { useAlert } from '../context/AlertContext';
 
 export default function NewNoteScreen() {
+  const { showAlert } = useAlert();
   const [title, setTitle] = useState('');
   const [type, setType] = useState<NoteType>('pregacao');
   const [scripture, setScripture] = useState('');
@@ -31,12 +32,20 @@ export default function NewNoteScreen() {
 
   const handleSave = () => {
     if (!title.trim()) {
-      Alert.alert('Título obrigatório', 'Dê um título para essa mensagem ou anotação.');
+      showAlert({
+        title: 'Título obrigatório',
+        message: 'Dê um título para essa mensagem ou anotação.',
+        icon: 'warning',
+      });
       return;
     }
 
     if (!content.trim()) {
-      Alert.alert('Conteúdo obrigatório', 'Escreva as anotações ou pontos principais.');
+      showAlert({
+        title: 'Conteúdo obrigatório',
+        message: 'Escreva as anotações ou pontos principais.',
+        icon: 'warning',
+      });
       return;
     }
 
@@ -52,15 +61,25 @@ export default function NewNoteScreen() {
         isFavorite,
       });
 
-      Alert.alert('Anotação Salva! 📖', 'Guardada no seu caderno com sucesso.', [
-        {
-          text: 'Ver no Caderno',
-          onPress: () => router.back(),
-        },
-      ]);
+      showAlert({
+        title: 'Anotação Salva! 📖',
+        message: 'Guardada no seu caderno com sucesso.',
+        icon: 'success',
+        buttons: [
+          {
+            text: 'Ver no Caderno',
+            style: 'default',
+            onPress: () => router.back(),
+          },
+        ],
+      });
     } catch (error) {
       console.error(error);
-      Alert.alert('Erro', 'Não foi possível salvar a anotação.');
+      showAlert({
+        title: 'Erro',
+        message: 'Não foi possível salvar a anotação.',
+        icon: 'error',
+      });
     } finally {
       setIsSaving(false);
     }

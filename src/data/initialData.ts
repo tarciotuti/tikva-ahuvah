@@ -8,29 +8,79 @@ export interface DailyVerse {
 
 export const DAILY_VERSES: DailyVerse[] = [
   {
-    reference: 'Isaías 40:31',
-    text: 'Mas aqueles que esperam no Senhor renovam as suas forças. Voam alto como águias; correm e não ficam exaustos, andam e não se cansam.',
-    theme: 'Esperança & Força',
+    reference: 'Salmos 62:5 (ARC)',
+    text: 'Ó minha alma, espera somente em Deus, porque dele vem a minha esperança.',
+    theme: 'Esperança em Deus',
   },
   {
-    reference: 'Jeremias 29:11',
+    reference: 'Lamentações 3:21 (ARC)',
+    text: 'Disso me recordarei no meu coração; por isso, tenho esperança.',
+    theme: 'Recordação & Fé',
+  },
+  {
+    reference: 'Romanos 5:5 (ARC)',
+    text: 'E a esperança não traz confusão, porquanto o amor de Deus está derramado em nosso coração pelo Espírito Santo que nos foi dado.',
+    theme: 'Amor & Certeza',
+  },
+  {
+    reference: 'Romanos 8:24 (ARC)',
+    text: 'Porque, em esperança, somos salvos. Ora, a esperança que se vê não é esperança; porque o que alguém vê, como o esperará?',
+    theme: 'Salvação & Esperança',
+  },
+  {
+    reference: 'Romanos 12:12 (ARC)',
+    text: 'Alegrai-vos na esperança, sede pacientes na tribulação, perseverai na oração;',
+    theme: 'Alegria & Oração',
+  },
+  {
+    reference: 'Romanos 15:13 (ARC)',
+    text: 'Ora, o Deus de esperança vos encha de todo o gozo e paz em crença, para que abundeis em esperança pela virtude do Espírito Santo.',
+    theme: 'Deus da Esperança',
+  },
+  {
+    reference: '1 Coríntios 13:13 (ARC)',
+    text: 'Agora, pois, permanecem a fé, a esperança e o amor, estes três; mas o maior destes é o amor.',
+    theme: 'Fé, Esperança & Amor',
+  },
+  {
+    reference: 'Tito 1:2 (ARC)',
+    text: '...em esperança da vida eterna, a qual Deus, que não pode mentir, prometeu antes dos tempos dos séculos;',
+    theme: 'Promessa Eterna',
+  },
+  {
+    reference: 'Hebreus 10:23 (ARC)',
+    text: '...retenhamos firmes a confissão da nossa esperança, porque fiel é o que prometeu.',
+    theme: 'Fidelidade Divina',
+  },
+  {
+    reference: '1 Pedro 1:3 (ARC)',
+    text: 'Bendito seja o Deus e Pai de nosso Senhor Jesus Cristo, que, segundo a sua grande misericórdia, nos gerou de novo para uma viva esperança, pela ressurreição de Jesus Cristo dentre os mortos...',
+    theme: 'Viva Esperança',
+  },
+  {
+    reference: 'Salmos 42:11 (NVI)',
+    text: 'Por que você está assim tão triste, ó minha alma? Por que está assim tão perturbada dentro de mim? Ponha a sua esperança em Deus! Pois ainda o louvarei; ele é o meu Salvador e o meu Deus.',
+    theme: 'Paz para a Alma',
+  },
+  {
+    reference: 'Salmos 130:5 (NVI)',
+    text: 'Espero no Senhor com todo o meu ser, e na sua palavra ponho a minha esperança.',
+    theme: 'Na Sua Palavra',
+  },
+  {
+    reference: 'Jeremias 29:11 (NVI)',
     text: 'Porque sou eu que conheço os planos que tenho para vocês, diz o Senhor, planos de fazê-los prosperar e não de causar dano, planos de dar a vocês esperança e um futuro.',
-    theme: 'Futuro & Paz',
+    theme: 'Planos de Paz & Futuro',
   },
   {
-    reference: 'Filipenses 4:6-7',
-    text: 'Não andem ansiosos por coisa alguma, mas em tudo apresentem seus pedidos a Deus. E a paz de Deus, que excede todo o entendimento, guardará o coração de vocês.',
-    theme: 'Coração Sereno',
+    reference: '1 Timóteo 4:10 (ARA)',
+    text: 'Ora, é para esse fim que labutamos e nos esforçamos sobremodo, porquanto temos posto a nossa esperança no Deus vivo, Salvador de todos os homens, especialmente dos fiéis.',
+    theme: 'No Deus Vivo',
   },
   {
-    reference: 'Salmos 46:1',
-    text: 'Deus é o nosso refúgio e a nossa fortaleza, auxílio sempre presente na adversidade.',
-    theme: 'Refúgio Seguro',
-  },
-  {
-    reference: 'Lamentações 3:22-23',
-    text: 'As misericórdias do Senhor são a causa de não sermos consumidos, porque as suas compaixões não têm fim; renovam-se a cada manhã. Grande é a tua fidelidade!',
-    theme: 'Novos Começos',
+    reference: 'Hebreus 6:19 (NVI)',
+    text: 'Temos esta esperança como âncora da alma, firme e segura, a qual adentra o santuário interior, por trás do véu.',
+    theme: 'Âncora da Alma',
   },
 ];
 
