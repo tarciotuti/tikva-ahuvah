@@ -1074,7 +1074,7 @@ export default function SettingsScreen() {
                     <Ionicons name="shield-checkmark" size={22} color={COLORS.gold} />
                   </View>
                   <Text style={styles.authorshipRole}>QUEM FEZ</Text>
-                  <Text style={styles.authorshipName}>André Tuti</Text>
+                  <Text style={styles.authorshipName}>Tárcio Tuti</Text>
                   <View style={styles.authorshipBadge}>
                     <Text style={styles.authorshipBadgeText}>Seu Líder & Companheiro</Text>
                   </View>
