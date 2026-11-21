@@ -182,6 +182,29 @@ export default function DashboardScreen() {
                   {currentYouAre.badge}
                 </Text>
               </View>
+              <View
+                style={[
+                  styles.youAreSourceBadge,
+                  currentYouAre.source === 'mensagem'
+                    ? { backgroundColor: '#EAF3EE', borderColor: '#D4E6DC' }
+                    : { backgroundColor: '#FDF0F2', borderColor: '#F8DCE0' },
+                ]}
+              >
+                <Ionicons
+                  name={currentYouAre.source === 'mensagem' ? 'chatbubble-ellipses' : 'heart'}
+                  size={10}
+                  color={currentYouAre.source === 'mensagem' ? COLORS.primary : COLORS.ruby}
+                />
+                <Text
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: '800',
+                    color: currentYouAre.source === 'mensagem' ? COLORS.primary : COLORS.ruby,
+                  }}
+                >
+                  {currentYouAre.source === 'mensagem' ? 'Nossas Mensagens' : 'Do Coração'}
+                </Text>
+              </View>
               {currentYouAre.hebrew && (
                 <Text style={styles.youAreHebrewTop}>{currentYouAre.hebrew}</Text>
               )}
@@ -827,6 +850,15 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 0.5,
+  },
+  youAreSourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3.5,
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 8,
+    borderWidth: 1,
   },
   youAreHebrewTop: {
     fontSize: 13,

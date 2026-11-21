@@ -147,7 +147,7 @@ export default function YouAreScreen() {
 
   // Categorias únicas para filtro na lista
   const categories = useMemo(() => {
-    return ['Todas', 'HEBRAICO', 'PROPÓSITO', 'CUIDADO', 'AFETO', 'ADMIRAÇÃO', 'FÉ', 'Favoritas'];
+    return ['Todas', 'Nossas Mensagens 💬', 'Do Coração ❤️', 'HEBRAICO', 'PROPÓSITO', 'CUIDADO', 'AFETO', 'ADMIRAÇÃO', 'FÉ', 'Favoritas'];
   }, []);
 
   const filteredItems = useMemo(() => {
@@ -161,6 +161,10 @@ export default function YouAreScreen() {
       let matchesCat = true;
       if (selectedCategory === 'Favoritas') {
         matchesCat = favorites.has(item.id);
+      } else if (selectedCategory === 'Nossas Mensagens 💬') {
+        matchesCat = item.source === 'mensagem';
+      } else if (selectedCategory === 'Do Coração ❤️') {
+        matchesCat = item.source === 'coracao';
       } else if (selectedCategory !== 'Todas') {
         matchesCat = item.badge === selectedCategory;
       }
@@ -270,6 +274,29 @@ export default function YouAreScreen() {
                     {currentItem.badge}
                   </Text>
                 </View>
+
+                {/* Badge de Origem: Nossas Mensagens vs Do Meu Coração */}
+                <View
+                  style={[
+                    styles.sourceBadge,
+                    currentItem.source === 'mensagem' ? styles.sourceBadgeMsg : styles.sourceBadgeHeart,
+                  ]}
+                >
+                  <Ionicons
+                    name={currentItem.source === 'mensagem' ? 'chatbubble-ellipses' : 'heart'}
+                    size={11}
+                    color={currentItem.source === 'mensagem' ? COLORS.primary : COLORS.ruby}
+                  />
+                  <Text
+                    style={[
+                      styles.sourceBadgeText,
+                      { color: currentItem.source === 'mensagem' ? COLORS.primary : COLORS.ruby },
+                    ]}
+                  >
+                    {currentItem.source === 'mensagem' ? 'Nossas Mensagens 💬' : 'Do Meu Coração ❤️'}
+                  </Text>
+                </View>
+
                 {currentItem.hebrew && (
                   <View style={styles.hebrewPill}>
                     <Text style={styles.hebrewPillText}>{currentItem.hebrew}</Text>
@@ -474,10 +501,33 @@ export default function YouAreScreen() {
                   </Text>
 
                   <View style={styles.listItemFooter}>
-                    <View style={[styles.listCategoryBadge, { backgroundColor: item.bg }]}>
-                      <Text style={[styles.listCategoryBadgeText, { color: item.color }]}>
-                        {item.badge}
-                      </Text>
+                    <View style={styles.listFooterLeft}>
+                      <View style={[styles.listCategoryBadge, { backgroundColor: item.bg }]}>
+                        <Text style={[styles.listCategoryBadgeText, { color: item.color }]}>
+                          {item.badge}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={[
+                          styles.listSourceBadge,
+                          item.source === 'mensagem' ? styles.sourceBadgeMsg : styles.sourceBadgeHeart,
+                        ]}
+                      >
+                        <Ionicons
+                          name={item.source === 'mensagem' ? 'chatbubble-ellipses' : 'heart'}
+                          size={10}
+                          color={item.source === 'mensagem' ? COLORS.primary : COLORS.ruby}
+                        />
+                        <Text
+                          style={[
+                            styles.listSourceBadgeText,
+                            { color: item.source === 'mensagem' ? COLORS.primary : COLORS.ruby },
+                          ]}
+                        >
+                          {item.source === 'mensagem' ? 'Mensagens' : 'Coração'}
+                        </Text>
+                      </View>
                     </View>
 
                     <TouchableOpacity
@@ -912,6 +962,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F0ECE4',
   },
+  listFooterLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   listCategoryBadge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -919,6 +974,41 @@ const styles = StyleSheet.create({
   },
   listCategoryBadgeText: {
     fontSize: 10,
+    fontWeight: '800',
+  },
+  sourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  sourceBadgeMsg: {
+    backgroundColor: '#EAF3EE',
+    borderWidth: 1,
+    borderColor: '#D4E6DC',
+  },
+  sourceBadgeHeart: {
+    backgroundColor: '#FDF0F2',
+    borderWidth: 1,
+    borderColor: '#F8DCE0',
+  },
+  sourceBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  listSourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2.5,
+    borderRadius: 7,
+  },
+  listSourceBadgeText: {
+    fontSize: 9.5,
     fontWeight: '800',
   },
   quickShareBtn: {

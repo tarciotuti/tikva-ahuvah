@@ -4,6 +4,7 @@ export interface YouAreItem {
   hebrew?: string;
   hebrewTranslit?: string;
   badge: 'HEBRAICO' | 'PROPÓSITO' | 'CUIDADO' | 'AFETO' | 'ADMIRAÇÃO' | 'FÉ';
+  source: 'mensagem' | 'coracao';
   declaration: string;
   text: string;
   icon: string;
@@ -30,6 +31,7 @@ export const YOU_ARE_ITEMS: YouAreItem[] = loadedItems.length > 0 ? loadedItems 
     id: 'devocional_padrao',
     keyword: 'Graça & Paz',
     badge: 'FÉ',
+    source: 'coracao',
     declaration: 'Que a graça e a paz do Senhor renovem as suas forças a cada dia.',
     text: 'Abençoado seja cada instante do seu caminhar e crescimento espiritual.',
     icon: 'sparkles',
