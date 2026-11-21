@@ -101,6 +101,14 @@ export const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, onCl
       action: () => navigateTo('/(tabs)/memories'),
     },
     {
+      title: 'Você Para Mim 🌿',
+      subtitle: 'O que você é para mim (Tikvá Sheli...)',
+      icon: 'sparkles',
+      color: COLORS.gold,
+      bg: COLORS.goldLight,
+      action: () => navigateTo('/you-are'),
+    },
+    {
       title: 'Poemas & Reflexões',
       subtitle: 'Versos autorais & salmos do coração',
       icon: 'leaf',

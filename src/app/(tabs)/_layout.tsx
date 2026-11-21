@@ -127,7 +127,27 @@ function TabsNavigator() {
           onPress={() => setMoreMenuVisible(false)}
         >
           <View style={[styles.moreMenuFloatingColumn, { bottom: tabHeight + 10 }]}>
-            {/* 1. Poemas & Reflexões Dela */}
+            {/* 1. Você Para Mim */}
+            <TouchableOpacity
+              style={styles.moreMenuItem}
+              onPress={() => {
+                setMoreMenuVisible(false);
+                router.push('/you-are');
+              }}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.moreMenuIconWrapper, { backgroundColor: '#FBF5E8' }]}>
+                <Ionicons name="sparkles" size={18} color={COLORS.gold} />
+              </View>
+              <View style={styles.moreMenuTextWrapper}>
+                <Text style={styles.moreMenuLabel}>Você Para Mim</Text>
+                <Text style={styles.moreMenuSub}>Tikvá Sheli & Definições</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.moreMenuDivider} />
+
+            {/* 2. Poemas & Reflexões Dela */}
             <TouchableOpacity
               style={styles.moreMenuItem}
               onPress={() => {

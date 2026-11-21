@@ -9,6 +9,7 @@ import {
   BackHandler,
   ToastAndroid,
   Platform,
+  Animated,
 } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,7 @@ import { COLORS } from '../../constants/theme';
 import { Memory, Capsule, Note } from '../../types';
 import { getMemories, getCapsules, getNotes } from '../../services/database';
 import { DAILY_VERSES } from '../../data/initialData';
+import { YOU_ARE_ITEMS } from '../../data/youAreData';
 import { NoteCard } from '../../components/NoteCard';
 import { MemoryCard } from '../../components/MemoryCard';
 import { AppHeader } from '../../components/AppHeader';
@@ -27,6 +29,8 @@ export default function DashboardScreen() {
   const [recentMemories, setRecentMemories] = useState<Memory[]>([]);
   const [unopenedCapsule, setUnopenedCapsule] = useState<Capsule | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [youAreIndex, setYouAreIndex] = useState(() => Math.floor(Math.random() * YOU_ARE_ITEMS.length));
+  const [fadeAnim] = useState(() => new Animated.Value(1));
   const lastBackPressRef = useRef<number>(0);
 
   const loadDashboardData = useCallback(() => {
@@ -79,6 +83,18 @@ export default function DashboardScreen() {
 
   const handleNextVerse = () => {
     setVerseIndex((prev) => (prev + 1) % DAILY_VERSES.length);
+  };
+
+  const currentYouAre = YOU_ARE_ITEMS[youAreIndex % YOU_ARE_ITEMS.length] || YOU_ARE_ITEMS[0];
+
+  const handleNextYouAre = () => {
+    Animated.sequence([
+      Animated.timing(fadeAnim, { toValue: 0.15, duration: 120, useNativeDriver: true }),
+      Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+    ]).start();
+    setTimeout(() => {
+      setYouAreIndex((prev) => (prev + 1) % YOU_ARE_ITEMS.length);
+    }, 120);
   };
 
   return (
@@ -151,6 +167,60 @@ export default function DashboardScreen() {
             <Text style={styles.verseReference}>{currentVerse.reference}</Text>
           </View>
         </View>
+
+        {/* Card Especial Interativo: O Que Você É Para Mim */}
+        <TouchableOpacity
+          style={styles.youAreHomeCard}
+          activeOpacity={0.92}
+          onPress={() => router.push('/you-are')}
+        >
+          <View style={styles.youAreCardHeader}>
+            <View style={styles.youAreHeaderLeft}>
+              <View style={[styles.youAreBadge, { backgroundColor: currentYouAre.bg }]}>
+                <Ionicons name={currentYouAre.icon as any} size={13} color={currentYouAre.color} />
+                <Text style={[styles.youAreBadgeText, { color: currentYouAre.color }]}>
+                  {currentYouAre.badge}
+                </Text>
+              </View>
+              {currentYouAre.hebrew && (
+                <Text style={styles.youAreHebrewTop}>{currentYouAre.hebrew}</Text>
+              )}
+            </View>
+
+            <TouchableOpacity
+              style={styles.youAreShufflePill}
+              activeOpacity={0.7}
+              onPress={(e) => {
+                e.stopPropagation();
+                handleNextYouAre();
+              }}
+            >
+              <Ionicons name="sparkles" size={12} color={COLORS.gold} />
+              <Text style={styles.youAreShufflePillText}>Outra Revelação</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Animated.View style={[styles.youAreBody, { opacity: fadeAnim }]}>
+            <Text style={styles.youArePreamble}>Você é para mim...</Text>
+            <View style={styles.youAreTitleRow}>
+              <Text style={styles.youAreKeyword}>{currentYouAre.keyword}</Text>
+              {currentYouAre.hebrewTranslit && (
+                <Text style={styles.youAreTranslit}>({currentYouAre.hebrewTranslit})</Text>
+              )}
+            </View>
+            <Text style={styles.youAreDeclaration}>
+              {`"${currentYouAre.declaration}"`}
+            </Text>
+          </Animated.View>
+
+          <View style={styles.youAreFooterRow}>
+            <Text style={styles.youAreFooterHint}>Tocar para ler a coleção completa</Text>
+            <View style={styles.youAreArrowPill}>
+              <Text style={styles.youAreArrowText}>Explorar</Text>
+              <Ionicons name="arrow-forward" size={13} color={COLORS.primary} />
+            </View>
+          </View>
+        </TouchableOpacity>
 
         {/* Ações Rápidas (Iconografia Reestilizada e Harmoniosa) */}
         <Text style={styles.sectionTitle}>Ações Rápidas</Text>
@@ -720,5 +790,126 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     color: COLORS.textSecondary,
     lineHeight: 16,
+  },
+  youAreHomeCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: 22,
+    padding: 18,
+    marginBottom: 20,
+    borderWidth: 1.5,
+    borderColor: '#EFE7D8',
+    elevation: 3,
+    shadowColor: '#173B2C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+  },
+  youAreCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  youAreHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  youAreBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  youAreBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  youAreHebrewTop: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.gold,
+  },
+  youAreShufflePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FAF5EA',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#EFE6D4',
+  },
+  youAreShufflePillText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: COLORS.gold,
+  },
+  youAreBody: {
+    paddingVertical: 4,
+  },
+  youArePreamble: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.textMuted,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  youAreTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: 6,
+    flexWrap: 'wrap',
+    marginBottom: 6,
+  },
+  youAreKeyword: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: COLORS.primary,
+  },
+  youAreTranslit: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    color: COLORS.gold,
+    fontWeight: '600',
+  },
+  youAreDeclaration: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: COLORS.text,
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  youAreFooterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F2ECE0',
+  },
+  youAreFooterHint: {
+    fontSize: 11,
+    color: COLORS.textMuted,
+    fontStyle: 'italic',
+  },
+  youAreArrowPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#EDF5F0',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+  },
+  youAreArrowText: {
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
 });

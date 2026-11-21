@@ -127,6 +127,13 @@ export default function RootLayout() {
               presentation: 'card',
             }}
           />
+          <Stack.Screen
+            name="you-are"
+            options={{
+              headerShown: false,
+              presentation: 'card',
+            }}
+          />
         </Stack>
 
         {/* Tela de Abertura com Versículo Bíblico Animado */}

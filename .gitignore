@@ -40,3 +40,7 @@ yarn-error.*
 /ios
 /android
 *.apk
+
+# private personal data files
+src/data/*.local.ts
+
