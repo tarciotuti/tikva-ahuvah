@@ -281,121 +281,129 @@ export default function YouAreScreen() {
 
       {/* CONTEÚDO PRINCIPAL: MODO CARTÃO */}
       {viewMode === 'card' && (
-        <ScrollView
-          contentContainerStyle={styles.cardModeScroll}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Cartão de Destaque com Moldura Nobre */}
-          <Animated.View
-            style={[
-              styles.luxuryCard,
-              {
-                opacity: cardOpacity,
-                transform: [{ scale: cardScale }],
-              },
-            ]}
+        <View style={styles.cardModeContainer}>
+          <ScrollView
+            style={styles.cardScrollView}
+            contentContainerStyle={styles.cardScrollContent}
+            showsVerticalScrollIndicator={false}
           >
-            {/* Topo do Cartão: Badges e Favorito */}
-            <View style={styles.cardHeaderRow}>
-              <View style={styles.badgesContainer}>
-                <View style={[styles.categoryBadge, { backgroundColor: currentItem.bg }]}>
-                  <Text style={[styles.categoryBadgeText, { color: currentItem.color }]}>
-                    {currentItem.badge}
-                  </Text>
-                </View>
+            {/* Apresentação Nobre e Orgânica (Sem borda de card rígida) */}
+            <Animated.View
+              style={[
+                styles.borderlessCanvas,
+                {
+                  opacity: cardOpacity,
+                  transform: [{ scale: cardScale }],
+                },
+              ]}
+            >
+              {/* Topo: Badges e Favorito */}
+              <View style={styles.cardHeaderRow}>
+                <View style={styles.badgesContainer}>
+                  <View style={[styles.categoryBadge, { backgroundColor: currentItem.bg }]}>
+                    <Text style={[styles.categoryBadgeText, { color: currentItem.color }]}>
+                      {currentItem.badge}
+                    </Text>
+                  </View>
 
-                {/* Badge de Origem: Nossas Mensagens vs Do Meu Coração */}
-                <View
-                  style={[
-                    styles.sourceBadge,
-                    currentItem.source === 'mensagem' ? styles.sourceBadgeMsg : styles.sourceBadgeHeart,
-                  ]}
-                >
-                  <Ionicons
-                    name={currentItem.source === 'mensagem' ? 'chatbubble-ellipses' : 'heart'}
-                    size={11}
-                    color={currentItem.source === 'mensagem' ? COLORS.primary : COLORS.ruby}
-                  />
-                  <Text
+                  {/* Badge de Origem: Nossas Mensagens vs Do Meu Coração */}
+                  <View
                     style={[
-                      styles.sourceBadgeText,
-                      { color: currentItem.source === 'mensagem' ? COLORS.primary : COLORS.ruby },
+                      styles.sourceBadge,
+                      currentItem.source === 'mensagem' ? styles.sourceBadgeMsg : styles.sourceBadgeHeart,
                     ]}
                   >
-                    {currentItem.source === 'mensagem' ? 'Nossas Mensagens 💬' : 'Do Meu Coração ❤️'}
-                  </Text>
-                </View>
-
-                {currentItem.hebrew && (
-                  <View style={styles.hebrewPill}>
-                    <Text style={styles.hebrewPillText}>{currentItem.hebrew}</Text>
+                    <Ionicons
+                      name={currentItem.source === 'mensagem' ? 'chatbubble-ellipses' : 'heart'}
+                      size={11}
+                      color={currentItem.source === 'mensagem' ? COLORS.primary : COLORS.ruby}
+                    />
+                    <Text
+                      style={[
+                        styles.sourceBadgeText,
+                        { color: currentItem.source === 'mensagem' ? COLORS.primary : COLORS.ruby },
+                      ]}
+                    >
+                      {currentItem.source === 'mensagem' ? 'Nossas Mensagens 💬' : 'Do Meu Coração ❤️'}
+                    </Text>
                   </View>
-                )}
+
+                  {currentItem.hebrew && (
+                    <View style={styles.hebrewPill}>
+                      <Text style={styles.hebrewPillText}>{currentItem.hebrew}</Text>
+                    </View>
+                  )}
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => toggleFavorite(currentItem.id)}
+                  activeOpacity={0.7}
+                  style={styles.favoriteButton}
+                >
+                  <Ionicons
+                    name={favorites.has(currentItem.id) ? 'heart' : 'heart-outline'}
+                    size={22}
+                    color={favorites.has(currentItem.id) ? COLORS.ruby : COLORS.textMuted}
+                  />
+                </TouchableOpacity>
               </View>
 
-              <TouchableOpacity
-                onPress={() => toggleFavorite(currentItem.id)}
-                activeOpacity={0.7}
-                style={styles.favoriteButton}
-              >
-                <Ionicons
-                  name={favorites.has(currentItem.id) ? 'heart' : 'heart-outline'}
-                  size={24}
-                  color={favorites.has(currentItem.id) ? COLORS.ruby : COLORS.textMuted}
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* Ícone Central Nobre */}
-            <View style={[styles.iconCircle, { backgroundColor: currentItem.bg }]}>
-              <Ionicons name={currentItem.icon as any} size={36} color={currentItem.color} />
-            </View>
-
-            {/* Invocação */}
-            <Text style={styles.preambleText}>Você é para mim...</Text>
-            <Text style={styles.keywordTitle}>{currentItem.keyword}</Text>
-
-            {currentItem.hebrewTranslit && (
-              <Text style={styles.translitSubtitle}>
-                {`"${currentItem.hebrewTranslit}"`}
-              </Text>
-            )}
-
-            <View style={styles.dividerLine} />
-
-            {/* Declaração Principal (com suporte a [me] em itálico) */}
-            {renderDeclarationContent(currentItem.declaration, styles.declarationQuote)}
-
-            {/* Foto Especial se houver (Ex: Beleza Real - 21/05/2026) */}
-            {currentItem.imageAsset && (
-              <View style={styles.cardImageContainer}>
-                <Image
-                  source={currentItem.imageAsset}
-                  style={styles.cardImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.cardImageCaptionPill}>
-                  <Ionicons name="sparkles" size={12} color={COLORS.gold} />
-                  <Text style={styles.cardImageCaptionText}>21 de Maio de 2026 • Beleza Real</Text>
+              {/* Ícone Central Nobre */}
+              <View style={styles.iconCircleWrapper}>
+                <View style={[styles.iconCircle, { backgroundColor: currentItem.bg }]}>
+                  <Ionicons name={currentItem.icon as any} size={36} color={currentItem.color} />
                 </View>
               </View>
-            )}
 
-            {/* Texto de Reflexão Fundamentado nas Conversas */}
-            <Text style={styles.reflectionParagraph}>
-              {currentItem.text}
-            </Text>
+              {/* Invocação Poética */}
+              <Text style={styles.preambleText}>Você é para mim...</Text>
+              <Text style={styles.keywordTitle}>{currentItem.keyword}</Text>
 
-            {/* Versículo de Inspiração se houver */}
-            {currentItem.verse && (
-              <View style={styles.verseBadge}>
-                <Ionicons name="book-outline" size={13} color={COLORS.gold} />
-                <Text style={styles.verseBadgeText}>{currentItem.verse}</Text>
+              {currentItem.hebrewTranslit && (
+                <Text style={styles.translitSubtitle}>
+                  {`"${currentItem.hebrewTranslit}"`}
+                </Text>
+              )}
+
+              {/* Ornamento Delicado */}
+              <View style={styles.dividerOrnament}>
+                <View style={styles.ornamentLine} />
+                <Ionicons name="sparkles" size={13} color={COLORS.gold} />
+                <View style={styles.ornamentLine} />
               </View>
-            )}
 
-            {/* Barra Inferior do Cartão com Ações */}
-            <View style={styles.cardFooterActions}>
+              {/* Declaração Principal (com suporte a [me] em itálico) */}
+              {renderDeclarationContent(currentItem.declaration, styles.declarationQuote)}
+
+              {/* Foto Especial se houver (Ex: Beleza Real - 21/05/2026) */}
+              {currentItem.imageAsset && (
+                <View style={styles.cardImageContainer}>
+                  <Image
+                    source={currentItem.imageAsset}
+                    style={styles.cardImage}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.cardImageCaptionPill}>
+                    <Ionicons name="sparkles" size={12} color={COLORS.gold} />
+                    <Text style={styles.cardImageCaptionText}>21 de Maio de 2026 • Beleza Real</Text>
+                  </View>
+                </View>
+              )}
+
+              {/* Texto de Reflexão Fundamentado nas Conversas */}
+              <Text style={styles.reflectionParagraph}>
+                {currentItem.text}
+              </Text>
+
+              {/* Versículo de Inspiração se houver */}
+              {currentItem.verse && (
+                <View style={styles.verseBadge}>
+                  <Ionicons name="book-outline" size={13} color={COLORS.gold} />
+                  <Text style={styles.verseBadgeText}>{currentItem.verse}</Text>
+                </View>
+              )}
+
+              {/* Botão de Ação: Enviar com Amor */}
               <TouchableOpacity
                 style={styles.shareCardButton}
                 onPress={() => handleShare(currentItem)}
@@ -404,42 +412,44 @@ export default function YouAreScreen() {
                 <Ionicons name="share-social-outline" size={17} color={COLORS.primary} />
                 <Text style={styles.shareCardButtonText}>Enviar com Amor</Text>
               </TouchableOpacity>
+            </Animated.View>
+          </ScrollView>
+
+          {/* BARRA FIXA INFERIOR: Não depende de scroll */}
+          <View style={[styles.fixedBottomBar, { paddingBottom: Math.max(insets.bottom + 6, 14) }]}>
+            <View style={styles.cardControlsRow}>
+              <TouchableOpacity
+                style={styles.navArrowButton}
+                onPress={handlePrev}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="chevron-back" size={24} color={COLORS.primary} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.randomActionButton}
+                onPress={handleRandom}
+                activeOpacity={0.85}
+              >
+                <Ionicons name="sparkles" size={18} color={COLORS.white} />
+                <Text style={styles.randomActionButtonText}>Surpreenda-me</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.navArrowButton}
+                onPress={handleNext}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="chevron-forward" size={24} color={COLORS.primary} />
+              </TouchableOpacity>
             </View>
-          </Animated.View>
 
-          {/* Navegação Entre as Declarações */}
-          <View style={styles.cardControlsRow}>
-            <TouchableOpacity
-              style={styles.navArrowButton}
-              onPress={handlePrev}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="chevron-back" size={24} color={COLORS.primary} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.randomActionButton}
-              onPress={handleRandom}
-              activeOpacity={0.85}
-            >
-              <Ionicons name="sparkles" size={18} color={COLORS.white} />
-              <Text style={styles.randomActionButtonText}>Surpreenda-me</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.navArrowButton}
-              onPress={handleNext}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="chevron-forward" size={24} color={COLORS.primary} />
-            </TouchableOpacity>
+            {/* Contador de Revelações */}
+            <Text style={styles.counterText}>
+              {currentIndex + 1} de {YOU_ARE_ITEMS.length} declarações de carinho
+            </Text>
           </View>
-
-          {/* Contador de Revelações */}
-          <Text style={styles.counterText}>
-            {currentIndex + 1} de {YOU_ARE_ITEMS.length} declarações de carinho
-          </Text>
-        </ScrollView>
+        </View>
       )}
 
       {/* CONTEÚDO PRINCIPAL: MODO LISTA / MOSAICO */}
@@ -462,33 +472,39 @@ export default function YouAreScreen() {
             )}
           </View>
 
-          {/* Filtros em Pílula */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryFiltersScroll}
-          >
-            {categories.map((cat) => (
-              <TouchableOpacity
-                key={cat}
-                style={[
-                  styles.filterPill,
-                  selectedCategory === cat && styles.filterPillActive,
-                ]}
-                onPress={() => setSelectedCategory(cat)}
-                activeOpacity={0.7}
-              >
-                <Text
-                  style={[
-                    styles.filterPillText,
-                    selectedCategory === cat && styles.filterPillTextActive,
-                  ]}
-                >
-                  {cat}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          {/* Filtros em Pílula (Design Fixo, Nítido e Confortável) */}
+          <View style={styles.categoryFiltersContainer}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.categoryFiltersScroll}
+            >
+              {categories.map((cat) => {
+                const isSelected = selectedCategory === cat;
+                return (
+                  <TouchableOpacity
+                    key={cat}
+                    style={[
+                      styles.filterPill,
+                      isSelected && styles.filterPillActive,
+                    ]}
+                    onPress={() => setSelectedCategory(cat)}
+                    activeOpacity={0.75}
+                  >
+                    <Text
+                      style={[
+                        styles.filterPillText,
+                        isSelected && styles.filterPillTextActive,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {cat}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
 
           {/* Lista de Declarações */}
           <ScrollView
@@ -682,52 +698,71 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontWeight: '800',
   },
-  cardModeScroll: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    alignItems: 'center',
+  cardModeContainer: {
+    flex: 1,
   },
-  luxuryCard: {
+  cardScrollView: {
+    flex: 1,
+  },
+  cardScrollContent: {
+    paddingHorizontal: 22,
+    paddingTop: 10,
+    paddingBottom: 28,
+  },
+  borderlessCanvas: {
     width: '100%',
-    backgroundColor: COLORS.surface,
-    borderRadius: 28,
-    padding: 24,
-    marginTop: 10,
-    borderWidth: 1.5,
-    borderColor: '#E8DFCE',
     alignItems: 'center',
-    shadowColor: '#173B2C',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    elevation: 10,
+    paddingVertical: 6,
   },
   cardHeaderRow: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 18,
   },
   badgesContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flexWrap: 'wrap',
+    flex: 1,
   },
   categoryBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 12,
   },
   categoryBadgeText: {
-    fontSize: 10,
+    fontSize: 10.5,
     fontWeight: '800',
     letterSpacing: 0.8,
+  },
+  sourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  sourceBadgeMsg: {
+    backgroundColor: '#EAF3EE',
+    borderColor: '#C8E2D2',
+  },
+  sourceBadgeHeart: {
+    backgroundColor: '#FFF0F2',
+    borderColor: '#F8CBD2',
+  },
+  sourceBadgeText: {
+    fontSize: 10.5,
+    fontWeight: '700',
   },
   hebrewPill: {
     backgroundColor: '#F5EFE0',
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#E2D4B9',
@@ -738,167 +773,181 @@ const styles = StyleSheet.create({
     color: '#8A6014',
   },
   favoriteButton: {
-    padding: 4,
+    padding: 6,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#EAE5DB',
+  },
+  iconCircleWrapper: {
+    marginBottom: 16,
+    padding: 6,
+    borderRadius: 48,
+    backgroundColor: '#F3EFE6',
+    borderWidth: 1,
+    borderColor: '#E8E0D0',
   },
   iconCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
+    width: 76,
+    height: 76,
+    borderRadius: 38,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 4,
   },
   preambleText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.textMuted,
+    fontSize: 12.5,
+    fontWeight: '800',
+    color: COLORS.gold,
     textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    marginBottom: 4,
+    letterSpacing: 2.2,
+    marginBottom: 6,
   },
   keywordTitle: {
-    fontSize: 26,
+    fontSize: 30,
     fontWeight: '900',
     color: COLORS.primary,
     textAlign: 'center',
-    letterSpacing: 0.3,
+    letterSpacing: 0.4,
+    lineHeight: 36,
   },
   translitSubtitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontStyle: 'italic',
-    color: COLORS.gold,
-    fontWeight: '600',
+    color: '#8A6014',
+    fontWeight: '700',
     marginTop: 4,
   },
-  dividerLine: {
-    width: 60,
-    height: 2,
-    backgroundColor: COLORS.gold,
-    opacity: 0.4,
+  dividerOrnament: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
     marginVertical: 18,
+    width: '100%',
+  },
+  ornamentLine: {
+    width: 44,
+    height: 1.5,
+    backgroundColor: '#DBCFB8',
     borderRadius: 1,
   },
   declarationQuote: {
-    fontSize: 16,
+    fontSize: 18.5,
     fontWeight: '700',
-    color: COLORS.text,
+    color: '#1C2E24',
     textAlign: 'center',
-    lineHeight: 23,
-    marginBottom: 14,
-    paddingHorizontal: 6,
+    lineHeight: 28,
+    marginBottom: 16,
+    paddingHorizontal: 8,
   },
   reflectionParagraph: {
-    fontSize: 14,
-    color: '#43544C',
+    fontSize: 15,
+    color: '#3B4E44',
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 18,
-    paddingHorizontal: 4,
+    lineHeight: 24,
+    marginBottom: 20,
+    paddingHorizontal: 6,
   },
   cardImageContainer: {
     width: '100%',
-    borderRadius: 20,
+    borderRadius: 22,
     overflow: 'hidden',
-    marginVertical: 14,
+    marginVertical: 16,
     borderWidth: 1.5,
-    borderColor: '#EFE6D4',
+    borderColor: '#E8DFC8',
     backgroundColor: '#F5EFE6',
     alignItems: 'center',
     shadowColor: '#173B2C',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 5,
   },
   cardImage: {
     width: '100%',
-    height: 320,
-    borderRadius: 18,
+    height: 340,
   },
   cardImageCaptionPill: {
     position: 'absolute',
-    bottom: 12,
+    bottom: 14,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(28, 72, 53, 0.88)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    backgroundColor: 'rgba(28, 72, 53, 0.90)',
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: 'rgba(194, 142, 52, 0.4)',
+    borderColor: 'rgba(194, 142, 52, 0.5)',
   },
   cardImageCaptionText: {
-    fontSize: 11.5,
+    fontSize: 12,
     fontWeight: '800',
-    color: '#F8F6F1',
+    color: '#FAF8F3',
     letterSpacing: 0.4,
   },
   verseBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#F9F5EC',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 12,
+    gap: 8,
+    backgroundColor: '#F7F2E6',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E8DECC',
-    marginBottom: 18,
+    borderColor: '#E4D9C2',
+    marginBottom: 20,
   },
   verseBadgeText: {
-    fontSize: 12,
+    fontSize: 12.5,
     fontWeight: '700',
     color: COLORS.gold,
-  },
-  cardFooterActions: {
-    width: '100%',
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
-    alignItems: 'center',
   },
   shareCardButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#EFF5F1',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    backgroundColor: '#EFF6F1',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#D4E6DA',
   },
   shareCardButtonText: {
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 13.5,
+    fontWeight: '800',
     color: COLORS.primary,
+  },
+  fixedBottomBar: {
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#ECE7DC',
+    paddingTop: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 8,
   },
   cardControlsRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 16,
-    marginTop: 24,
     width: '100%',
   },
   navArrowButton: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: COLORS.surface,
+    backgroundColor: '#F8F6F1',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.borderLight,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    borderWidth: 1.2,
+    borderColor: '#E2DBD0',
   },
   randomActionButton: {
     flexDirection: 'row',
@@ -906,16 +955,16 @@ const styles = StyleSheet.create({
     gap: 8,
     backgroundColor: COLORS.primary,
     paddingVertical: 13,
-    paddingHorizontal: 24,
+    paddingHorizontal: 26,
     borderRadius: 26,
     shadowColor: '#173B2C',
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowRadius: 8,
+    elevation: 5,
   },
   randomActionButtonText: {
-    fontSize: 14,
+    fontSize: 14.5,
     fontWeight: '800',
     color: COLORS.white,
     letterSpacing: 0.4,
@@ -924,7 +973,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.textMuted,
     fontWeight: '600',
-    marginTop: 18,
+    marginTop: 8,
   },
   listContainer: {
     flex: 1,
@@ -948,30 +997,46 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.text,
   },
+  categoryFiltersContainer: {
+    height: 52,
+    marginBottom: 6,
+    justifyContent: 'center',
+  },
   categoryFiltersScroll: {
     paddingHorizontal: 20,
-    paddingBottom: 10,
-    gap: 8,
+    alignItems: 'center',
+    gap: 10,
   },
   filterPill: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 14,
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    height: 38,
+    paddingHorizontal: 16,
+    borderRadius: 19,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.2,
+    borderColor: '#E2DBD0',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   filterPillActive: {
     backgroundColor: COLORS.primary,
     borderColor: COLORS.primary,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    elevation: 3,
   },
   filterPillText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
-    color: COLORS.textMuted,
+    color: '#65736A',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   filterPillTextActive: {
-    color: COLORS.white,
+    color: '#FFFFFF',
+    fontWeight: '800',
   },
   listScrollContent: {
     paddingHorizontal: 20,
@@ -1054,29 +1119,6 @@ const styles = StyleSheet.create({
   listCategoryBadgeText: {
     fontSize: 10,
     fontWeight: '800',
-  },
-  sourceBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-  },
-  sourceBadgeMsg: {
-    backgroundColor: '#EAF3EE',
-    borderWidth: 1,
-    borderColor: '#D4E6DC',
-  },
-  sourceBadgeHeart: {
-    backgroundColor: '#FDF0F2',
-    borderWidth: 1,
-    borderColor: '#F8DCE0',
-  },
-  sourceBadgeText: {
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 0.3,
   },
   listSourceBadge: {
     flexDirection: 'row',

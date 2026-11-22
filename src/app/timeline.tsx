@@ -10,14 +10,13 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { TIMELINE_MILESTONES, CONVERSATION_SNIPPETS } from '../data/timelineData';
-import { TimelineMilestone, ConversationSnippet } from '../types';
+import { CONVERSATION_SNIPPETS } from '../data/timelineData';
+import { ConversationSnippet } from '../types';
 
 export default function TimelineScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  const [activeTab, setActiveTab] = useState<'marcos' | 'trechos'>('marcos');
   const [expandedSnippetId, setExpandedSnippetId] = useState<string | null>(null);
 
   const handleShareSnippet = async (item: ConversationSnippet) => {
@@ -30,36 +29,6 @@ export default function TimelineScreen() {
     } catch (err) {
       console.warn('Erro ao compartilhar trecho:', err);
     }
-  };
-
-  const renderMilestone = ({ item, index }: { item: TimelineMilestone; index: number }) => {
-    const isLast = index === TIMELINE_MILESTONES.length - 1;
-
-    return (
-      <View style={styles.milestoneRow}>
-        {/* Timeline spine & icon */}
-        <View style={styles.spineColumn}>
-          <View style={styles.milestoneIconCircle}>
-            <Ionicons name={item.icon as any} size={18} color="#C28E34" />
-          </View>
-          {!isLast && <View style={styles.spineLine} />}
-        </View>
-
-        {/* Milestone card */}
-        <View style={styles.milestoneCard}>
-          <View style={styles.milestoneBadgeRow}>
-            <View style={styles.yearBadge}>
-              <Text style={styles.yearBadgeText}>{item.year}</Text>
-            </View>
-            <Text style={styles.milestoneDateText}>{item.date}</Text>
-          </View>
-
-          <Text style={styles.milestoneTitle}>{item.title}</Text>
-          <Text style={styles.milestoneSubtitle}>{item.subtitle}</Text>
-          <Text style={styles.milestoneDescription}>{item.description}</Text>
-        </View>
-      </View>
-    );
   };
 
   const renderSnippet = ({ item }: { item: ConversationSnippet }) => {
@@ -191,87 +160,29 @@ export default function TimelineScreen() {
 
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Nossa Linha do Tempo</Text>
-          <Text style={styles.headerSubtitle}>Marcos & Trechos da Nossa História (2021 – 2026)</Text>
+          <Text style={styles.headerSubtitle}>Trechos Marcantes da Nossa História (2021 – 2026)</Text>
         </View>
       </View>
 
-      {/* Segmented Control Tabs */}
-      <View style={styles.tabsContainer}>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'marcos' && styles.activeTabButton]}
-          onPress={() => setActiveTab('marcos')}
-          activeOpacity={0.8}
-        >
-          <Ionicons
-            name="hourglass-outline"
-            size={16}
-            color={activeTab === 'marcos' ? '#FFFFFF' : '#4E5A4E'}
-          />
-          <Text
-            style={[styles.tabButtonText, activeTab === 'marcos' && styles.activeTabText]}
-          >
-            Marcos da História
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'trechos' && styles.activeTabButton]}
-          onPress={() => setActiveTab('trechos')}
-          activeOpacity={0.8}
-        >
-          <Ionicons
-            name="chatbubbles-outline"
-            size={16}
-            color={activeTab === 'trechos' ? '#FFFFFF' : '#4E5A4E'}
-          />
-          <Text
-            style={[styles.tabButtonText, activeTab === 'trechos' && styles.activeTabText]}
-          >
-            Trechos Marcantes
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Main Content */}
-      {activeTab === 'marcos' ? (
-        <FlatList
-          data={TIMELINE_MILESTONES}
-          keyExtractor={(item) => item.id}
-          renderItem={renderMilestone}
-          contentContainerStyle={styles.timelineContent}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={styles.headerBanner}>
-              <Ionicons name="trail-sign-outline" size={26} color="#C28E34" />
-              <View style={styles.headerBannerText}>
-                <Text style={styles.headerBannerTitle}>A Jornada de Fé & Amor 🌿</Text>
-                <Text style={styles.headerBannerDesc}>
-                  Mais de 5 anos construídos sobre a rocha: desde as primeiras madrugadas de clamor em 2021 até hoje.
-                </Text>
-              </View>
+      {/* Main Content: Trechos Marcantes */}
+      <FlatList
+        data={CONVERSATION_SNIPPETS}
+        keyExtractor={(item) => item.id}
+        renderItem={renderSnippet}
+        contentContainerStyle={styles.snippetsContent}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <View style={styles.headerBanner}>
+            <Ionicons name="chatbubble-ellipses-outline" size={26} color="#9E2A3B" />
+            <View style={styles.headerBannerText}>
+              <Text style={styles.headerBannerTitle}>Diálogos que Marcaram o Coração 💌</Text>
+              <Text style={styles.headerBannerDesc}>
+                Momentos autênticos da nossa caminhada: da oração na madrugada às risadas e ao consolo na fraqueza.
+              </Text>
             </View>
-          }
-        />
-      ) : (
-        <FlatList
-          data={CONVERSATION_SNIPPETS}
-          keyExtractor={(item) => item.id}
-          renderItem={renderSnippet}
-          contentContainerStyle={styles.snippetsContent}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View style={styles.headerBanner}>
-              <Ionicons name="chatbubble-ellipses-outline" size={26} color="#9E2A3B" />
-              <View style={styles.headerBannerText}>
-                <Text style={styles.headerBannerTitle}>Diálogos que Marcaram o Coração 💌</Text>
-                <Text style={styles.headerBannerDesc}>
-                  Momentos autênticos da nossa conversa: da oração na madrugada às risadas e ao consolo na fraqueza.
-                </Text>
-              </View>
-            </View>
-          }
-        />
-      )}
+          </View>
+        }
+      />
     </View>
   );
 }
@@ -307,41 +218,6 @@ const styles = StyleSheet.create({
     color: '#6E776E',
     marginTop: 1,
   },
-  tabsContainer: {
-    flexDirection: 'row',
-    marginHorizontal: 16,
-    marginTop: 12,
-    marginBottom: 6,
-    backgroundColor: '#EBE6DC',
-    borderRadius: 14,
-    padding: 4,
-  },
-  tabButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 11,
-  },
-  activeTabButton: {
-    backgroundColor: '#24523F',
-    shadowColor: '#24523F',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  tabButtonText: {
-    fontSize: 13.5,
-    fontWeight: '600',
-    color: '#526052',
-    marginLeft: 6,
-  },
-  activeTabText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
   headerBanner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -371,92 +247,6 @@ const styles = StyleSheet.create({
     color: '#556055',
     lineHeight: 18,
     marginTop: 3,
-  },
-
-  // Milestones styles
-  timelineContent: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 40,
-  },
-  milestoneRow: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  spineColumn: {
-    alignItems: 'center',
-    width: 36,
-    marginRight: 12,
-  },
-  milestoneIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F3ECDE',
-    borderWidth: 2,
-    borderColor: '#C28E34',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
-  },
-  spineLine: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#D8CCA8',
-    marginVertical: 4,
-  },
-  milestoneCard: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    padding: 18,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#E8E1D1',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  milestoneBadgeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  yearBadge: {
-    backgroundColor: '#24523F',
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 8,
-  },
-  yearBadgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  milestoneDateText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#8C7A58',
-  },
-  milestoneTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#24523F',
-    marginBottom: 3,
-  },
-  milestoneSubtitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#9E2A3B',
-    marginBottom: 8,
-  },
-  milestoneDescription: {
-    fontSize: 13.5,
-    color: '#4B574B',
-    lineHeight: 21,
   },
 
   // Snippets styles
@@ -588,25 +378,7 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
 
-  // Leader Note
-  leaderNoteBox: {
-    flexDirection: 'row',
-    backgroundColor: '#FBF5EB',
-    borderRadius: 12,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#E8DCC6',
-    alignItems: 'flex-start',
-    marginBottom: 10,
-  },
-  leaderNoteText: {
-    flex: 1,
-    fontSize: 12.5,
-    fontStyle: 'italic',
-    color: '#6B5838',
-    marginLeft: 8,
-    lineHeight: 18,
-  },
+  // Tags & details
   snippetTagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
