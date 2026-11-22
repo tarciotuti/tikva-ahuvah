@@ -231,9 +231,17 @@ export default function DashboardScreen() {
                 <Text style={styles.youAreTranslit}>({currentYouAre.hebrewTranslit})</Text>
               )}
             </View>
-            <Text style={styles.youAreDeclaration}>
-              {`"${currentYouAre.declaration}"`}
-            </Text>
+            {currentYouAre.declaration.includes('[me]') ? (
+              <Text style={styles.youAreDeclaration}>
+                &ldquo;{currentYouAre.declaration.split('[me]')[0]}
+                <Text style={{ fontStyle: 'italic', fontWeight: '900', color: COLORS.gold }}>[me]</Text>
+                {currentYouAre.declaration.split('[me]')[1]}&rdquo;
+              </Text>
+            ) : (
+              <Text style={styles.youAreDeclaration}>
+                {`"${currentYouAre.declaration}"`}
+              </Text>
+            )}
           </Animated.View>
 
           <View style={styles.youAreFooterRow}>

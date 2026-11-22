@@ -41,6 +41,8 @@ yarn-error.*
 /android
 *.apk
 
-# private personal data files
+# private personal data and media files
 src/data/*.local.ts
+assets/**/*.local.*
+*.local.*
 

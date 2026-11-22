@@ -9,6 +9,7 @@ import {
   Animated,
   TextInput,
   StatusBar,
+  Image,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,6 +27,34 @@ function setAudioPlayerLoop(p: any, loop: boolean) {
   } catch (err) {
     console.warn('Erro ao configurar loop de áudio:', err);
   }
+}
+
+function renderDeclarationContent(text: string, style: any) {
+  if (text.includes('[me]')) {
+    const parts = text.split('[me]');
+    return (
+      <Text style={style}>
+        {`"${parts[0]}`}
+        <Text style={{ fontStyle: 'italic', fontWeight: '900', color: COLORS.gold }}>[me]</Text>
+        {`${parts[1]}"`}
+      </Text>
+    );
+  }
+  return <Text style={style}>{`"${text}"`}</Text>;
+}
+
+function renderListDeclarationContent(text: string, style: any) {
+  if (text.includes('[me]')) {
+    const parts = text.split('[me]');
+    return (
+      <Text style={style} numberOfLines={2}>
+        {parts[0]}
+        <Text style={{ fontStyle: 'italic', fontWeight: '900', color: COLORS.gold }}>[me]</Text>
+        {parts[1]}
+      </Text>
+    );
+  }
+  return <Text style={style} numberOfLines={2}>{text}</Text>;
 }
 
 export default function YouAreScreen() {
@@ -334,10 +363,23 @@ export default function YouAreScreen() {
 
             <View style={styles.dividerLine} />
 
-            {/* Declaração Principal */}
-            <Text style={styles.declarationQuote}>
-              {`"${currentItem.declaration}"`}
-            </Text>
+            {/* Declaração Principal (com suporte a [me] em itálico) */}
+            {renderDeclarationContent(currentItem.declaration, styles.declarationQuote)}
+
+            {/* Foto Especial se houver (Ex: Beleza Real - 21/05/2026) */}
+            {currentItem.imageAsset && (
+              <View style={styles.cardImageContainer}>
+                <Image
+                  source={currentItem.imageAsset}
+                  style={styles.cardImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.cardImageCaptionPill}>
+                  <Ionicons name="sparkles" size={12} color={COLORS.gold} />
+                  <Text style={styles.cardImageCaptionText}>21 de Maio de 2026 • Beleza Real</Text>
+                </View>
+              </View>
+            )}
 
             {/* Texto de Reflexão Fundamentado nas Conversas */}
             <Text style={styles.reflectionParagraph}>
@@ -479,9 +521,7 @@ export default function YouAreScreen() {
                           <Text style={styles.listItemHebrew}>{item.hebrew}</Text>
                         )}
                       </View>
-                      <Text style={styles.listItemDeclaration} numberOfLines={2}>
-                        {item.declaration}
-                      </Text>
+                      {renderListDeclarationContent(item.declaration, styles.listItemDeclaration)}
                     </View>
 
                     <TouchableOpacity
@@ -759,6 +799,45 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 18,
     paddingHorizontal: 4,
+  },
+  cardImageContainer: {
+    width: '100%',
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginVertical: 14,
+    borderWidth: 1.5,
+    borderColor: '#EFE6D4',
+    backgroundColor: '#F5EFE6',
+    alignItems: 'center',
+    shadowColor: '#173B2C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  cardImage: {
+    width: '100%',
+    height: 320,
+    borderRadius: 18,
+  },
+  cardImageCaptionPill: {
+    position: 'absolute',
+    bottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(28, 72, 53, 0.88)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(194, 142, 52, 0.4)',
+  },
+  cardImageCaptionText: {
+    fontSize: 11.5,
+    fontWeight: '800',
+    color: '#F8F6F1',
+    letterSpacing: 0.4,
   },
   verseBadge: {
     flexDirection: 'row',

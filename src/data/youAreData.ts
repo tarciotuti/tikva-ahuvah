@@ -11,6 +11,7 @@ export interface YouAreItem {
   color: string;
   bg: string;
   verse?: string;
+  imageAsset?: any;
 }
 
 // Declarações locais privadas (mantidas fora do repositório público via .gitignore)
