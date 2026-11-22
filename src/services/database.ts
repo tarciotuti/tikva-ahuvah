@@ -102,10 +102,10 @@ export function initDatabase() {
     }
   }
 
-  // Popular cápsulas se vazias
-  const capsuleCountRow = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM capsules');
-  if (capsuleCountRow && capsuleCountRow.count === 0) {
-    for (const cap of INITIAL_CAPSULES) {
+  // Sincronizar ou popular cápsulas se faltar alguma
+  for (const cap of INITIAL_CAPSULES) {
+    const exists = db.getFirstSync<{ id: string }>('SELECT id FROM capsules WHERE id = ?', [cap.id]);
+    if (!exists) {
       db.runSync(
         `INSERT INTO capsules (id, title, subtitle, content, quote, author_note, unlock_date, is_opened, category, icon, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -148,10 +148,10 @@ export function initDatabase() {
     }
   }
 
-  // Popular poemas se vazios
-  const poemsCountRow = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM poems');
-  if (poemsCountRow && poemsCountRow.count === 0) {
-    for (const poem of INITIAL_POEMS) {
+  // Sincronizar ou popular poemas se faltar algum
+  for (const poem of INITIAL_POEMS) {
+    const exists = db.getFirstSync<{ id: string }>('SELECT id FROM poems WHERE id = ?', [poem.id]);
+    if (!exists) {
       db.runSync(
         `INSERT INTO poems (id, title, date, content, author_note, tags, is_original, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,

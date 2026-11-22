@@ -9,6 +9,9 @@ import {
   TextInput,
   ScrollView,
   Share,
+  Image,
+  Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +19,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Poem } from '../types';
 import { getPoems, insertPoem, updatePoem, deletePoem } from '../services/database';
 import { useAlert } from '../context/AlertContext';
+import { MANUSCRIPT_ASSETS } from '../utils/manuscriptAssets';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function PoemsScreen() {
   const router = useRouter();
@@ -33,6 +39,7 @@ export default function PoemsScreen() {
   const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingPoem, setEditingPoem] = useState<Poem | null>(null);
+  const [showManuscriptModal, setShowManuscriptModal] = useState(false);
 
   // Form states
   const [formTitle, setFormTitle] = useState('');
@@ -336,10 +343,66 @@ export default function PoemsScreen() {
                 </View>
               )}
 
+              {/* Botão de Ver Manuscrito Original (se disponível) */}
+              {MANUSCRIPT_ASSETS[selectedPoem.id] && (
+                <TouchableOpacity
+                  style={styles.manuscriptButton}
+                  activeOpacity={0.85}
+                  onPress={() => setShowManuscriptModal(true)}
+                >
+                  <View style={styles.manuscriptIconCircle}>
+                    <Ionicons name="document-text" size={20} color="#C28E34" />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 12 }}>
+                    <Text style={styles.manuscriptButtonTitle}>Ver Poema Manuscrito Original 📜</Text>
+                    <Text style={styles.manuscriptButtonSub}>Toque para ver a folha e a escrita original</Text>
+                  </View>
+                  <Ionicons name="eye-outline" size={20} color="#24523F" />
+                </TouchableOpacity>
+              )}
+
               <View style={styles.readingSignature}>
                 <Text style={styles.readingSignatureText}>Tikvá Sheli 🌿 Escrito com amor</Text>
               </View>
             </ScrollView>
+
+            {/* Modal para Visualização do Manuscrito do Poema */}
+            {MANUSCRIPT_ASSETS[selectedPoem.id] && (
+              <Modal
+                visible={showManuscriptModal}
+                animationType="fade"
+                transparent={false}
+                onRequestClose={() => setShowManuscriptModal(false)}
+              >
+                <SafeAreaView style={styles.manuscriptModalContainer}>
+                  <View style={styles.manuscriptModalHeader}>
+                    <View>
+                      <Text style={styles.manuscriptModalTitle}>Manuscrito do Poema 📜</Text>
+                      <Text style={styles.manuscriptModalSub}>Poema original escrito à mão</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.manuscriptModalClose}
+                      onPress={() => setShowManuscriptModal(false)}
+                    >
+                      <Ionicons name="close" size={24} color="#24523F" />
+                    </TouchableOpacity>
+                  </View>
+                  <ScrollView
+                    style={{ flex: 1 }}
+                    contentContainerStyle={styles.manuscriptImageScroll}
+                    maximumZoomScale={3}
+                    minimumZoomScale={1}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    <Image
+                      source={MANUSCRIPT_ASSETS[selectedPoem.id]}
+                      style={styles.manuscriptFullImage}
+                      resizeMode="contain"
+                    />
+                  </ScrollView>
+                </SafeAreaView>
+              </Modal>
+            )}
           </View>
         )}
       </Modal>
@@ -726,6 +789,82 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontStyle: 'italic',
     color: '#8A968A',
+  },
+  manuscriptButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FAF5EA',
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E6D9BE',
+    marginTop: 20,
+    marginBottom: 4,
+    shadowColor: '#C28E34',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  manuscriptIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F3E8D2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manuscriptButtonTitle: {
+    fontSize: 14.5,
+    fontWeight: '800',
+    color: '#8A6014',
+  },
+  manuscriptButtonSub: {
+    fontSize: 12,
+    color: '#6E726A',
+    marginTop: 2,
+  },
+  manuscriptModalContainer: {
+    flex: 1,
+    backgroundColor: '#1A211E',
+  },
+  manuscriptModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#242F2A',
+  },
+  manuscriptModalTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  manuscriptModalSub: {
+    fontSize: 12,
+    color: '#C8D2CB',
+    marginTop: 2,
+  },
+  manuscriptModalClose: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F0EFEA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manuscriptImageScroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 12,
+  },
+  manuscriptFullImage: {
+    width: SCREEN_WIDTH - 24,
+    height: SCREEN_HEIGHT * 0.82,
   },
 
   // Editor Modal Styles

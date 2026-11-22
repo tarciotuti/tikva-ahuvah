@@ -1,6 +1,6 @@
 import { Poem } from '../types';
 
-export const INITIAL_POEMS: Poem[] = [
+const FALLBACK_POEMS: Poem[] = [
   {
     id: 'poem-1',
     title: 'Recomeço',
@@ -14,7 +14,7 @@ Que se tropeçamos é necessário voltar a nos levantar.
 Pois um tropeço não é o fim de tudo,
 E sim a oportunidade de recomeçar
 Com mais força, sabedoria e fé.`,
-    authorNote: 'Escrito por ela em um dia de renovo e perseverança na caminhada cristã.',
+    authorNote: 'Reflexão de renovo e perseverança na caminhada cristã.',
     tags: ['Superação', 'Fé', 'Recomeço'],
     isOriginal: true,
     createdAt: new Date('2022-01-06').getTime(),
@@ -51,9 +51,24 @@ Hoje decidi exaltar
 Exaltar e bendizer
 Ao Todo-Poderoso,
 Que com misericórdia eterna sustenta o meu viver.`,
-    authorNote: 'Salmo autoral de louvor e adoração à benignidade de Deus.',
+    authorNote: 'Salmo de louvor e adoração à benignidade de Deus.',
     tags: ['Adoração', 'Louvor', 'Benignidade'],
     isOriginal: true,
     createdAt: new Date('2022-07-09').getTime(),
   },
 ];
+
+let poems = FALLBACK_POEMS;
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const local = require('./initialPoems.local');
+  if (local && local.INITIAL_POEMS && Array.isArray(local.INITIAL_POEMS)) {
+    poems = local.INITIAL_POEMS;
+  }
+} catch {
+  // Arquivo local privado ausente no repositório público
+}
+
+export const INITIAL_POEMS: Poem[] = poems;
+

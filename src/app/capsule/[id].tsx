@@ -5,6 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Image,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -12,10 +15,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/theme';
 import { Capsule } from '../../types';
 import { getCapsuleById, markCapsuleOpened } from '../../services/database';
+import { MANUSCRIPT_ASSETS } from '../../utils/manuscriptAssets';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function CapsuleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [capsule] = useState<Capsule | null>(() => (id ? getCapsuleById(id) : null));
+  const [showManuscriptModal, setShowManuscriptModal] = useState(false);
 
   useEffect(() => {
     if (capsule && !capsule.isOpened) {
@@ -89,6 +96,24 @@ export default function CapsuleDetailScreen() {
           )}
         </View>
 
+        {/* Botão de Ver Manuscrito Original (se disponível) */}
+        {MANUSCRIPT_ASSETS[capsule.id] && (
+          <TouchableOpacity
+            style={styles.manuscriptButton}
+            activeOpacity={0.85}
+            onPress={() => setShowManuscriptModal(true)}
+          >
+            <View style={styles.manuscriptIconCircle}>
+              <Ionicons name="document-text" size={20} color={COLORS.gold} />
+            </View>
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={styles.manuscriptButtonTitle}>Ver Manuscrito Original 📜</Text>
+              <Text style={styles.manuscriptButtonSub}>Toque para ver a foto do papel e caligrafia original</Text>
+            </View>
+            <Ionicons name="eye-outline" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
+        )}
+
         {/* Botão de Fechar Aconchegante */}
         <TouchableOpacity
           style={styles.keepInHeartBtn}
@@ -99,6 +124,44 @@ export default function CapsuleDetailScreen() {
           <Text style={styles.keepInHeartText}>Guardar de volta no coração</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Modal para Visualização do Manuscrito Original */}
+      {MANUSCRIPT_ASSETS[capsule.id] && (
+        <Modal
+          visible={showManuscriptModal}
+          animationType="fade"
+          transparent={false}
+          onRequestClose={() => setShowManuscriptModal(false)}
+        >
+          <SafeAreaView style={styles.manuscriptModalContainer}>
+            <View style={styles.manuscriptModalHeader}>
+              <View>
+                <Text style={styles.manuscriptModalTitle}>Manuscrito Original 📜</Text>
+                <Text style={styles.manuscriptModalSub}>A carta escrita à mão com amor</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.manuscriptModalClose}
+                onPress={() => setShowManuscriptModal(false)}
+              >
+                <Ionicons name="close" size={24} color={COLORS.primary} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView
+              style={{ flex: 1 }}
+              contentContainerStyle={styles.manuscriptImageScroll}
+              maximumZoomScale={3}
+              minimumZoomScale={1}
+              showsVerticalScrollIndicator={false}
+            >
+              <Image
+                source={MANUSCRIPT_ASSETS[capsule.id]}
+                style={styles.manuscriptFullImage}
+                resizeMode="contain"
+              />
+            </ScrollView>
+          </SafeAreaView>
+        </Modal>
+      )}
     </SafeAreaView>
   );
 }
@@ -242,6 +305,81 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: COLORS.white,
+  },
+  manuscriptButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FBF7EE',
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#E8DCBF',
+    marginBottom: 20,
+    shadowColor: '#C28E34',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  manuscriptIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F5ECDA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manuscriptButtonTitle: {
+    fontSize: 14.5,
+    fontWeight: '800',
+    color: '#8A6014',
+  },
+  manuscriptButtonSub: {
+    fontSize: 12,
+    color: '#6E726A',
+    marginTop: 2,
+  },
+  manuscriptModalContainer: {
+    flex: 1,
+    backgroundColor: '#1A211E',
+  },
+  manuscriptModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#242F2A',
+  },
+  manuscriptModalTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  manuscriptModalSub: {
+    fontSize: 12,
+    color: '#C8D2CB',
+    marginTop: 2,
+  },
+  manuscriptModalClose: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#F0EFEA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  manuscriptImageScroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 12,
+  },
+  manuscriptFullImage: {
+    width: SCREEN_WIDTH - 24,
+    height: SCREEN_HEIGHT * 0.82,
   },
   notFoundContainer: {
     flex: 1,

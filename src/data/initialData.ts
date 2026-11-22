@@ -127,7 +127,7 @@ export const INITIAL_MEMORIES: Memory[] = [
   },
 ];
 
-export const INITIAL_CAPSULES: Capsule[] = [
+const FALLBACK_CAPSULES: Capsule[] = [
   {
     id: 'cap-1',
     title: 'Abra quando o dia parecer pesado demais',
@@ -227,6 +227,20 @@ export const INITIAL_CAPSULES: Capsule[] = [
     createdAt: Date.now(),
   },
 ];
+
+let initialCapsules = FALLBACK_CAPSULES;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const local = require('./initialCapsules.local');
+  if (local && local.INITIAL_CAPSULES && Array.isArray(local.INITIAL_CAPSULES)) {
+    initialCapsules = local.INITIAL_CAPSULES;
+  }
+} catch {
+  // Arquivo local privado ausente no repositório público
+}
+
+export const INITIAL_CAPSULES: Capsule[] = initialCapsules;
+
 
 export const INITIAL_NOTES: Note[] = [
   {
